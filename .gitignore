@@ -1,21 +1,19 @@
-# Node modules
-./wesite/node_modules/
-
-# Build output
-dist/
+# React Vite build & dependencies
+wesite/node_modules/
+wesite/dist/
 
 # Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+wesite/npm-debug.log*
+wesite/yarn-debug.log*
+wesite/yarn-error.log*
+wesite/pnpm-debug.log*
 
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Local environment files
+wesite/.env
+wesite/.env.local
+wesite/.env.development.local
+wesite/.env.test.local
+wesite/.env.production.local
 
 # Editor & system files
 .DS_Store
@@ -28,4 +26,4 @@ Thumbs.db
 *.swo
 
 # Optional cache
-.cache/
+wesite/.cache/
