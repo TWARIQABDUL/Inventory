@@ -89,6 +89,13 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <span className="nav-text">purchase</span>
                   </Link>
                 </li>
+                <li className={`nav-item `}>
+                  <Link to="/analytics" className="nav-link">
+                  {/* <AnalyserNode/> */}
+                    {/* <IconComponent size={18} className="nav-icon" /> */}
+                    <span className="nav-text">Analytics</span>
+                  </Link>
+                </li>
           </ul>
         </nav>
       </aside>

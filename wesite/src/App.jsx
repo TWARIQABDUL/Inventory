@@ -3,10 +3,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout';
 import Dashboard from './components/Dashboard';
 import './styles/global.css';
+import './styles/analytics.css';
+
 import Home from './components/home';
 import Inventory from './pages/inventory';
 import Sales from './pages/sales';
 import Purchase from './pages/purchase';
+import Analytics from './pages/analytics';
 
 function App() {
   return (
@@ -18,6 +21,8 @@ function App() {
           <Route path='/inventory' element ={<Inventory/>}/>
           <Route path='/sales' element ={<Sales/>}/>
           <Route path='/purchase' element ={<Purchase/>}/>
+          <Route path='/analytics' element ={<Analytics/>}/>
+
           {/* <Route path='/home' element ={<Home/>}/> */}
           {/* Add more pages here */}
         </Route>
