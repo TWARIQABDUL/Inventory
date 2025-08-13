@@ -1,11 +1,7 @@
 import React from 'react';
 import { User, Settings, HelpCircle, LogOut } from 'lucide-react';
 
-interface UserDropdownProps {
-  onClose: () => void;
-}
-
-const UserDropdown: React.FC<UserDropdownProps> = ({ onClose }) => {
+const UserDropdown = ({ onClose }) => {
   return (
     <div className="user-dropdown">
       <div className="dropdown-header">
