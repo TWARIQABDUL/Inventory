@@ -1,33 +1,28 @@
-import React, { useState } from 'react';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-
-import './styles/global.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './pages/Layout';
 import Dashboard from './components/Dashboard';
+import './styles/global.css';
+import Home from './components/home';
+import Inventory from './pages/inventory';
+import Sales from './pages/sales';
+import Purchase from './pages/purchase';
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState();
-  const [currentView, setCurrentView] = useState('grid');
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const handleViewChange = () => {
-    setCurrentView(view);
-  };
-
   return (
-    <div className="app">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="main-content">
-        <Header 
-          onMenuClick={toggleSidebar}
-        />
-        <Dashboard/>
-      </div>
-      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Layout wraps all main pages */}
+        <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path='/inventory' element ={<Inventory/>}/>
+          <Route path='/sales' element ={<Sales/>}/>
+          <Route path='/purchase' element ={<Purchase/>}/>
+          {/* <Route path='/home' element ={<Home/>}/> */}
+          {/* Add more pages here */}
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

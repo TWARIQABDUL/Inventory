@@ -11,8 +11,8 @@ const UserDropdown = ({ onClose }) => {
           className="dropdown-avatar"
         />
         <div className="dropdown-user-info">
-          <div className="dropdown-user-name">Sarah Johnson</div>
-          <div className="dropdown-user-email">sarah@company.com</div>
+          <div className="dropdown-user-name">Jeff</div>
+          <div className="dropdown-user-email">jeff@gmail.com</div>
         </div>
       </div>
       

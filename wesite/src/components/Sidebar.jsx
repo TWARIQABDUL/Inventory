@@ -14,8 +14,9 @@ import {
   UserCheck, 
   HelpCircle, 
   Settings,
-  X
+  X,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // interface SidebarProps {
 //   isOpen: boolean;
@@ -49,7 +50,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="logo-icon">
               <LayoutDashboard size={24} />
             </div>
-            <span className="logo-text">FinanceFlow</span>
+            <span className="logo-text">INVENTORY</span>
           </div>
           <button className="sidebar-close" onClick={onClose}>
             <X size={20} />
@@ -58,17 +59,36 @@ const Sidebar = ({ isOpen, onClose }) => {
         
         <nav className="sidebar-nav">
           <ul className="nav-list">
-            {navigationItems.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <li key={item.id} className={`nav-item ${item.active ? 'nav-item-active' : ''}`}>
-                  <a href="#" className="nav-link">
-                    <IconComponent size={18} className="nav-icon" />
-                    <span className="nav-text">{item.label}</span>
-                  </a>
+
+            {/* ${item.active ? 'nav-item-active' : ''} */}
+                <li className={`nav-item `}>
+                  <Link to="/" className="nav-link">
+                  <LayoutDashboard/>
+                    {/* <IconComponent size={18} className="nav-icon" /> */}
+                    <span className="nav-text">dashboard</span>
+                  </Link>
                 </li>
-              );
-            })}
+                <li className={`nav-item `}>
+                  <Link to="/inventory" className="nav-link">
+                  <Package/>
+                    {/* <IconComponent size={18} className="nav-icon" /> */}
+                    <span className="nav-text">Inventory</span>
+                  </Link>
+                </li>
+                <li className={`nav-item `}>
+                  <Link to="/sales" className="nav-link">
+                  <TrendingUp/>
+                    {/* <IconComponent size={18} className="nav-icon" /> */}
+                    <span className="nav-text">Sales</span>
+                  </Link>
+                </li>
+                <li className={`nav-item `}>
+                  <Link to="/purchase" className="nav-link">
+                  <ShoppingCart/>
+                    {/* <IconComponent size={18} className="nav-icon" /> */}
+                    <span className="nav-text">purchase</span>
+                  </Link>
+                </li>
           </ul>
         </nav>
       </aside>

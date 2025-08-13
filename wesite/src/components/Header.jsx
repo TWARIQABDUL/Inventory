@@ -12,7 +12,7 @@ const Header = ({ onMenuClick, currentView, onViewChange }) => {
         <button className="menu-button" onClick={onMenuClick}>
           <Menu size={20} />
         </button>
-        <h1 className="greeting">Hello, Sarah Johnson!</h1>
+        <h1 className="greeting">Hello, Jeff</h1>
       </div>
 
       <div className="header-center">
