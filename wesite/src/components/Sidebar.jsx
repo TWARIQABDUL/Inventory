@@ -19,24 +19,6 @@ import {
 } from 'lucide-react';
 import {Link} from 'react-router-dom';
 
-const navigationItems = [
-  {id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, active: true},
-  {id: 'inventory', label: 'Inventory', icon: Package},
-  {id: 'sales', label: 'Sales', icon: TrendingUp},
-  {id: 'purchases', label: 'Purchases', icon: ShoppingCart},
-  {id: 'vendors', label: 'Vendors', icon: Users},
-  {id: 'purchase-orders', label: 'Purchase Orders', icon: FileText},
-  {id: 'purchase-received', label: 'Purchase Received', icon: CreditCard},
-  {id: 'expenses', label: 'Expenses', icon: Receipt},
-  {id: 'documents', label: 'Documents', icon: FolderOpen},
-  {id: 'integrations', label: 'Integrations', icon: Zap},
-  {id: 'report', label: 'Report', icon: BarChart3},
-  {id: 'customers', label: 'Customers', icon: UserCheck},
-  {id: 'invoices', label: 'Invoices', icon: FileText},
-  {id: 'help', label: 'Help', icon: HelpCircle},
-  {id: 'settings', label: 'Settings', icon: Settings}
-];
-
 const Sidebar = ({isOpen, onClose}) => {
   return (
     <>
