@@ -15,6 +15,7 @@ import {
   HelpCircle, 
   Settings,
   X,
+  BarChart,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -91,7 +92,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 </li>
                 <li className={`nav-item `}>
                   <Link to="/analytics" className="nav-link">
-                  {/* <AnalyserNode/> */}
+                  <BarChart/>
                     {/* <IconComponent size={18} className="nav-icon" /> */}
                     <span className="nav-text">Analytics</span>
                   </Link>
