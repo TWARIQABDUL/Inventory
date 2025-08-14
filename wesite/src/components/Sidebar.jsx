@@ -76,7 +76,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <Link to="/analytics" className="nav-link">
                   <BarChart/>
                     {/* <IconComponent size={18} className="nav-icon" /> */}
-                    <span className="nav-text">Analytics</span>
+                    <span className="nav-text">Analytics Change</span>
                   </Link>
                 </li>
           </ul>
