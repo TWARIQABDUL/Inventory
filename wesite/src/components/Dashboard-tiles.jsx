@@ -1,19 +1,27 @@
 import React from 'react';
-import cube from '../assets/images/cube.png';
-import dollar from '../assets/images/dollar.png';
-import warningRed from '../assets/images/warning-red.png';
-import warningYellow from '../assets/images/warning-yellow.png';
-import {Alerts} from "./Stock-alerts.jsx";
-
+import {Package, DollarSign, AlertTriangle} from 'lucide-react';
+import '../styles/dashboard.css'
 
 export const dashBoardData = [
-  {titleName: 'Total Items', titleIcon: cube, tileBody: '12', tileFooter: '+0 items added this week'},
-  {titleName: 'Total Value', titleIcon: dollar, tileBody: '$31,771.1', tileFooter: 'Inventory worth'},
-  {titleName: 'Low Stock', titleIcon: warningRed, tileBody: '2', tileFooter: 'Items need restocking'},
-  {titleName: 'Out of Stock', titleIcon: warningYellow, tileBody: '2', tileFooter: 'Items Unavailable'}
+  {titleName: 'Total Items', titleIcon: Package, tileBody: '12', tileFooter: '+0 items added this week'},
+  {titleName: 'Total Value', titleIcon: DollarSign, tileBody: '$31,771.1', tileFooter: 'Inventory worth'},
+  {
+    titleName: 'Low Stock',
+    titleIcon: AlertTriangle,
+    tileBody: '2',
+    tileFooter: 'Items need restocking',
+    iconColor: '#ffcc00'
+  },
+  {
+    titleName: 'Out of Stock',
+    titleIcon: AlertTriangle,
+    tileBody: '2',
+    tileFooter: 'Items Unavailable',
+    iconColor: '#ff0000'
+  }
 ];
 
-export function DashboardTile({titleName, titleIcon, tileBody, tileFooter}) {
+export function DashboardTile({titleName, titleIcon, tileBody, tileFooter, iconColor}) {
   return (
     <div className="dashboard-tile">
       <div className="tile-header">
@@ -21,7 +29,7 @@ export function DashboardTile({titleName, titleIcon, tileBody, tileFooter}) {
           <h1>{titleName}</h1>
         </div>
         <div className="title-icon">
-          <img className="tile-icon" src={titleIcon} alt="tile-icon"/>
+          {React.createElement(titleIcon, {size: 24, color: iconColor})}
         </div>
       </div>
       <div className="tile-body">
@@ -37,17 +45,18 @@ export function DashboardTile({titleName, titleIcon, tileBody, tileFooter}) {
 export default function DashboardTiles() {
   return (
     <div className="dashboard-tiles">
-        {
-          dashBoardData.map((tile) => (
-            <DashboardTile
-              key={tile.titleName}
-              titleName={tile.titleName}
-              titleIcon={tile.titleIcon}
-              tileBody={tile.tileBody}
-              tileFooter={tile.tileFooter}
-            />
-          ))
-        }
+      {
+        dashBoardData.map((tile) => (
+          <DashboardTile
+            key={tile.titleName}
+            titleName={tile.titleName}
+            titleIcon={tile.titleIcon}
+            tileBody={tile.tileBody}
+            tileFooter={tile.tileFooter}
+            iconColor={tile.iconColor}
+          />
+        ))
+      }
     </div>
   );
 }

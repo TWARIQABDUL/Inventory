@@ -1,4 +1,6 @@
 import React from "react";
+import stats from '../assets/images/graph.png'
+import '../styles/dashboard.css'
 
 export const statsList = [
   {statName: "Total Products:", statValue: "1,234"},
@@ -10,11 +12,9 @@ export const statsList = [
 function StatsList({statName, statValue}){
   return(
     <>
-      <div className="stats-list">
-        <div className="stats-item">
-          <h2>{statName}</h2>
-          <p>{statValue}</p>
-        </div>
+      <div className='stats-item'>
+        <h2>{statName}</h2>
+        <p>{statValue}</p>
       </div>
     </>
   );
@@ -25,7 +25,7 @@ export function Stats() {
     <>
       <div className='inventory-stats'>
         <div className='stats-title'>
-          <img src="../assets/images/graph.png" alt="stats-icon"/>
+          <img src={stats} alt="stats-icon" className="stats-icon"/>
           <h1>Quick Stats</h1>
         </div>
         <div className="stats-container">
