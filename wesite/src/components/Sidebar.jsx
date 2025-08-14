@@ -79,14 +79,6 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <span className="nav-text">Analytics Change</span>
                   </Link>
                 </li>
-            {navigationItems.slice(0, 4).map(item => (
-              <li key={item.id} className="nav-item">
-                <Link to={item.id === 'dashboard' ? '/' : `/${item.id}`} className="nav-link">
-                  <item.icon size={18}/>
-                  <span className="nav-text">{item.label}</span>
-                </Link>
-              </li>
-            ))}
           </ul>
         </nav>
       </aside>
