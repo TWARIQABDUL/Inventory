@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout';
-import Dashboard from './components/Dashboard';
+import {Dashboard} from './pages/Dashboard';
 import './styles/global.css';
 import './styles/analytics.css';
-
-import Home from './components/home';
 import Inventory from './pages/inventory';
 import Sales from './pages/sales';
 import Purchase from './pages/purchase';
