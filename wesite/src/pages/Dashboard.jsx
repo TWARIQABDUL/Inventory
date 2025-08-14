@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import DashboardTiles from "../components/Dashboard-tiles.jsx";
-import {Alerts} from "../components/Stock-alerts.jsx";
-import {Stats} from "../components/Stats.jsx";
-import {ProductList} from "../components/ProductList.jsx";
-import '../styles/dashboard.css'
-import {Button} from "../components/button.jsx";
+import { Alerts } from "../components/Stock-alerts.jsx";
+import { Stats } from "../components/Stats.jsx";
+import { ProductList } from "../components/ProductList.jsx";
+import "../styles/dashboard.css";
+import { Button } from "../components/button.jsx";
 
 export function Dashboard() {
   return (
@@ -13,16 +13,22 @@ export function Dashboard() {
         <div className="dashboard-header">
           <div className="dashboard-title">
             <h1 className="dashboard-title">Dashboard</h1>
-            <p className="dashboard-subtitle">Overview of Your inventory management System</p>
+            <p className="dashboard-subtitle">
+              Overview of Your inventory management System
+            </p>
           </div>
-          <Button button_value="Add +" button_color="btn-primary" onClick={() => {}}/>
+          <Button
+            button_value="Add +"
+            button_color="btn-primary"
+            onClick={() => {}}
+          />
         </div>
-        <DashboardTiles/>
+        <DashboardTiles />
         <div className="section-2">
-          <Alerts/>
-          <Stats/>
+          <Alerts />
+          <Stats />
         </div>
-        <ProductList/>
+        <ProductList />
       </div>
     </main>
   );

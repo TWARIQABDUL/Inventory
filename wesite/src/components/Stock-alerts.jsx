@@ -1,14 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import warning_yellow from "../assets/images/warning-yellow.png";
 import "../styles/dashboard.css";
-
-export const StockAlertsList = [
-  { productName: "Wireless Mouse", stock: 60, category: "Electronics" },
-  { productName: "Wireless Mouse", stock: 5, category: "Electronics" },
-  { productName: "Wireless Mouse", stock: 6, category: "Electronics" },
-  { productName: "Wireless Mouse", stock: 20, category: "Electronics" },
-  { productName: "Wireless Mouse", stock: 13, category: "Electronics" },
-];
 
 export function StockAlerts({ productName, stock, category }) {
   return (
@@ -42,12 +34,29 @@ export function StockAlerts({ productName, stock, category }) {
 }
 
 export function Alerts() {
+  const [StockAlertsList, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      const StockAlertsList = [
+        { productName: "Wireless Mouse", stock: 60, category: "Electronics" },
+        { productName: "Wireless Mouse", stock: 50, category: "Electronics" },
+        { productName: "Wireless Mouse", stock: 40, category: "Electronics" },
+        { productName: "Wireless Mouse", stock: 70, category: "Electronics" },
+        { productName: "Wireless Mouse", stock: 80, category: "Electronics" },
+      ];
+      setAlerts(StockAlertsList);
+      setLoading(false);
+    }, 3000);
+  }, []);
+
   return (
     <div className="stock-alerts">
       <div className="stock-alerts-title">
         <img src={warning_yellow} alt="Stock warning indicator" />
         <h2>Stock Alerts</h2>
       </div>
+      {loading && <div className="spinner"></div>}
       <div className="stock-alerts-list">
         {StockAlertsList.map((alert) => {
           return (
