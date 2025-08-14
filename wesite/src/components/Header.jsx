@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Menu, Grid3X3, List, Bell, ChevronDown } from 'lucide-react';
 import UserDropdown from './UserDropdown';
+import user from '../assets/images/user.png'
 
 
 const Header = ({ onMenuClick, currentView, onViewChange }) => {
@@ -12,7 +13,7 @@ const Header = ({ onMenuClick, currentView, onViewChange }) => {
         <button className="menu-button" onClick={onMenuClick}>
           <Menu size={20} />
         </button>
-        <h1 className="greeting">Hello, Jeff</h1>
+        <h1 className="greeting">Hello, Jeffery</h1>
       </div>
 
       <div className="header-center">
@@ -55,7 +56,7 @@ const Header = ({ onMenuClick, currentView, onViewChange }) => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <img 
-              src="https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop&crop=face" 
+              src={user}
               alt="Sarah Johnson" 
               className="user-avatar"
             />

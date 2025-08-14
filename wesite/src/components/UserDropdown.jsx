@@ -1,12 +1,13 @@
 import React from 'react';
 import { User, Settings, HelpCircle, LogOut } from 'lucide-react';
+import user from '../assets/images/user.png'
 
 const UserDropdown = ({ onClose }) => {
   return (
     <div className="user-dropdown">
       <div className="dropdown-header">
         <img 
-          src="https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=48&h=48&fit=crop&crop=face"
+          src={user}
           alt="Sarah Johnson" 
           className="dropdown-avatar"
         />

@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Layout from './pages/Layout';
-import Dashboard from './components/Dashboard';
+import {Dashboard} from './pages/Dashboard.jsx';
 import './styles/global.css';
 import './styles/analytics.css';
 
