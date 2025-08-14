@@ -5,7 +5,7 @@ import {Dashboard} from './pages/Dashboard.jsx';
 import './styles/global.css';
 import './styles/analytics.css';
 
-import Home from './components/home';
+// import Home from './components/home';
 import Inventory from './pages/inventory';
 import Sales from './pages/sales';
 import Purchase from './pages/purchase';
