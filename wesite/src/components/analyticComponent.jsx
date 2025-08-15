@@ -5,21 +5,22 @@ import FilterControls from '../components/filtercontrols';
 import AnalyticsChart from '../components/charts/BarChart';
 import { AnalyticsContext, AnalyticsProvider } from '../context/datacontext';
 import { useContext } from 'react';
+import MyTable from './tablecomponent';
 
 function AnalyticsComponent() {
   const [loading, setLoading] = useState(true);
-  const {dynData,Sortdata,filterd,refresh}= useContext(AnalyticsContext);
+  const { dynData, Sortdata, filterd, refresh } = useContext(AnalyticsContext);
   // const data = [
   //   { name: 'Page ', uv: 400, pv: 2400, amt: 2700 },
   //   { name: 'Page B', uv: 300, pv: 2000, amt: 2210 },
   //   { name: 'Page C', uv: 800, pv: 9800, amt: 2290 },
   //   { name: 'Page D', uv: 278, pv: 3908, amt: 2000 },
   //   { name: 'Page D', uv: 278, pv: 3908, amt: 2000 },
-  
+
   // ];
 
-  console.log("I filtered",filterd);
-  
+  console.log("I filtered", filterd);
+
   const [filters, setFilters] = useState({
     dateRange: {
       start: '2025-01-01',
@@ -33,7 +34,7 @@ function AnalyticsComponent() {
     products: []
   });
   const [refreshing, setRefreshing] = useState(false);
-  const{refrech}= useContext(AnalyticsContext);
+  const { refrech } = useContext(AnalyticsContext);
 
   useEffect(() => {
     // Simulate initial data loading
@@ -46,8 +47,8 @@ function AnalyticsComponent() {
   }, []);
 
   const handleFilterChange = (newFilters) => {
-    
-    
+
+
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
@@ -113,21 +114,14 @@ function AnalyticsComponent() {
         </div>
       </div>
 
-      <div className="analytics-content flex">
+      <div className="analytics-content">
         <div className="bg-white rounded-lg shadow p-4">
           <h2 className="text-xl font-semibold mb-4">Analytics Overview</h2>
           <div className="chart flex justify-between mb-4 gap-3">
-            {/* {data.map((data, index)=>  */}
-            <AnalyticsChart data={filterd ?? dynData} />
-            {/* )} */}
-            {/* <AnalyticsChart /> */}
+              <AnalyticsChart data={filterd ?? dynData} />          
           </div>
+            <MyTable />
         </div>
-
-        {/* <KPISection filters={filters} />
-        <ChartsSection filters={filters} />
-        <UserInsights filters={filters} />
-        <ProductPerformance filters={filters} /> */}
       </div>
     </div>
   );
