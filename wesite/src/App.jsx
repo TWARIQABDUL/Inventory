@@ -10,6 +10,8 @@ import Inventory from './pages/inventory';
 import Sales from './pages/sales';
 import Purchase from './pages/purchase';
 import Analytics from './pages/analytics';
+import LoginPage from './pages/login';
+import Register from './pages/register.jsx';
 
 function App() {
   return (
@@ -26,6 +28,10 @@ function App() {
           {/* <Route path='/home' element ={<Home/>}/> */}
           {/* Add more pages here */}
         </Route>
+          <Route path='/login' element ={<LoginPage/>}/>
+          <Route path='/register' element ={<Register/>}/>
+
+
       </Routes>
     </BrowserRouter>
   );
