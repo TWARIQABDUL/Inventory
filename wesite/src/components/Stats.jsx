@@ -1,6 +1,8 @@
-import React, {useEffect, useState} from "react";
-import stats from "../assets/images/graph.png";
-import "../styles/dashboard.css";
+import React, { useEffect, useState } from "react";
+import { Card, Flex } from "antd";
+import { Typography } from "antd";
+import { LineChartOutlined } from "@ant-design/icons";
+const { Title, Text } = Typography;
 
 export const statsList = [
   { statName: "Total Products:", statValue: "1,234" },
@@ -11,12 +13,10 @@ export const statsList = [
 
 function StatsList({ statName, statValue }) {
   return (
-    <>
-      <div className="stats-item">
-        <h2>{statName}</h2>
-        <p>{statValue}</p>
-      </div>
-    </>
+    <Flex justify="space-between">
+      <Title level={5}>{statName}</Title>
+      <Text>{statValue}</Text>
+    </Flex>
   );
 }
 
@@ -36,23 +36,22 @@ export function Stats() {
     }, 3000);
   }, []);
   return (
-    <>
-      <div className="inventory-stats">
-        <div className="stats-title">
-          <img src={stats} alt="stats-icon" className="stats-icon" />
-          <h1>Quick Stats</h1>
-        </div>
-        {loading && <div className="spinner"></div>}
-        <div className="stats-container">
-          {statsList.map((stat) => (
-            <StatsList
-              key={stat.statName}
-              statName={stat.statName}
-              statValue={stat.statValue}
-            />
-          ))}
-        </div>
-      </div>
-    </>
+    <Card
+      title={
+        <span>
+          <LineChartOutlined />
+          Quick Stats
+        </span>
+      }
+      style={{width: "100%", height: "50%"}}
+    >
+      {statsList.map((stat, index) => (
+        <StatsList
+          key={stat.statName + index}
+          statName={stat.statName}
+          statValue={stat.statValue}
+        />
+      ))}
+    </Card>
   );
 }
