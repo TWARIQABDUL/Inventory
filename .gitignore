@@ -1,5 +1,6 @@
 # React Vite build & dependencies
 wesite/node_modules/
+inventory_management/src/resource/application.properties
 wesite/dist/
 
 # Logs
