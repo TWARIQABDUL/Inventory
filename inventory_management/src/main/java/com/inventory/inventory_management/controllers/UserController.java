@@ -1,6 +1,5 @@
 package com.inventory.inventory_management.controllers;
 
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
