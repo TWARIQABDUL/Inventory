@@ -29,7 +29,8 @@ public class LoginService {
             User user = userEmail.get();
             if (passwordEncoder.matches(pwd, user.getPassword())) {
                 return ResponseEntity.ok(
-                    new LoginResponse("Login successful")
+                    new LoginResponse("Login successful", user,true
+                    )
                 ); // login success
             }
         }
@@ -38,7 +39,7 @@ public class LoginService {
         e.printStackTrace(); // log error
     }
 
-    return ResponseEntity.status(401).body(new LoginResponse("User not found")); // login failed
+    return ResponseEntity.status(401).body(new LoginResponse("User not found",null,false)); // login failed
 }
 
 

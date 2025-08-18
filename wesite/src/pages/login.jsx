@@ -1,19 +1,59 @@
-import { Card, Form, Row, Col, Input, Button } from 'antd';
+import { Card, Form, Input, Button, message, Space, Row, Col } from 'antd';
+
 import { Loader } from 'lucide-react';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { UserContext } from '../context/userContext';
 
 function LoginPage() {
+  const [messageApi, contextHolder] = message.useMessage();
+     const { useUser,setUser } = useContext(UserContext);  
+     console.log("here ",useUser);
+     
+  
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const  navigator  = useNavigate()
   const [loading, setLoading] = useState(false);
+  const success = (content) => {
+    messageApi.open({
+      type: 'success',
+      content: content,
+    });
+  };
 
-  const onFinish = (values) => {
-    console.log('Login details:', values);
+  const error = (content) => {
+    messageApi.open({
+      type: 'error',
+      content: content,
+    });
+  };
+  const login = async (values) => {
     setLoading(true);
 
-    // Simulate login request
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    const response = await axios.post(`${baseUrl}/auth/login`,
+      {
+        email: values.email,
+        password: values.password,
+      }
+
+    ).then(data => {
+      localStorage.setItem("user", JSON.stringify(data.data))
+      success(data.mesage)
+      setUser(data.data)
+      console.log("Found some data", data);
+
+      setLoading(false)
+      navigator("/")
+
+    }).catch(e => {
+      error("user not found")
+      // error(e.response.data.mesage)
+      console.log("oops found Error", e);
+      setLoading(false)
+
+
+    })
   };
 
   return (
@@ -22,10 +62,11 @@ function LoginPage() {
         title={<h2 className="text-center text-xl font-semibold">Welcome Back</h2>}
         className="w-full max-w-md shadow-lg rounded-lg"
       >
+        {contextHolder}
         <Form
           name="loginForm"
           layout="vertical"
-          onFinish={onFinish}
+          onFinish={login}
           size="large"
         >
           <Form.Item
