@@ -1,12 +1,24 @@
-import { Card, Form, Row, Col, Input, Button } from 'antd';
+import { Card, Form,Input, Button,message, Space } from 'antd';
 import { Loader } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { data, Link } from 'react-router-dom';
+import axios from 'axios';
 function Register() {
     const [loading, setLoading] = useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    const onFinish = (values) => {
+    const register = async (values) => {
+
+        const response = await axios.post(`${baseUrl}/auth/register`,
+            {
+                email: values.email,
+                password: values.password,
+                uname: values.uname
+            }
+
+        )
+        // console.log(response.data);
+        
         console.log('Login details:', values);
         setLoading(true);
 
@@ -24,7 +36,7 @@ function Register() {
                 <Form
                     name="loginForm"
                     layout="vertical"
-                    onFinish={onFinish}
+                    onFinish={register}
                     size="large"
                 >
                     <Form.Item
