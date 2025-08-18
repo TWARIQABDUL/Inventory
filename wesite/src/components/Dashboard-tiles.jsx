@@ -18,7 +18,7 @@ const tileData = [
   {
     key: "total-value",
     title: "Total Value",
-    icon: <DollarOutlined style={{ fontSize: 24, color: "#52c41a" }} />, // AntD success color
+    icon: <DollarOutlined style={{ fontSize: 24, color: "#52c41a" }} />,
     value: 31771,
     prefix: "$",
     footer: "Inventory worth",
@@ -26,14 +26,14 @@ const tileData = [
   {
     key: "low-stock",
     title: "Low Stock",
-    icon: <WarningOutlined style={{ fontSize: 24, color: "#faad14" }} />, // AntD warning color
+    icon: <WarningOutlined style={{ fontSize: 24, color: "#faad14" }} />, 
     value: 2,
     footer: "Items need restocking",
   },
   {
     key: "out-of-stock",
     title: "Out of Stock",
-    icon: <WarningOutlined style={{ fontSize: 24, color: "#f5222d" }} />, // AntD error color
+    icon: <WarningOutlined style={{ fontSize: 24, color: "#f5222d" }} />,
     value: 2,
     footer: "Items Unavailable",
   },

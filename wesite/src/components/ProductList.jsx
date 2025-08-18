@@ -3,12 +3,17 @@ import { Search } from "lucide-react";
 import { Flex, Input, Table } from "antd";
 import { Typography } from "antd";
 const { Title } = Typography;
-
 const initialProducts = [
-  { id: 1, name: "Laptop", price: 1200, quantity: 10 },
-  { id: 2, name: "Mouse", price: 25, quantity: 50 },
-  { id: 3, name: "Keyboard", price: 75, quantity: 30 },
-  { id: 4, name: "Monitor", price: 300, quantity: 15 },
+  { id: 1, name: "Webcam", Category: "Accessories", price: 80, quantity: 20 },
+  { id: 2, name: "Desk Chair", Category: "Furniture", price: 150, quantity: 8 },
+  { id: 3, name: "USB Cable", Category: "Accessories", price: 10, quantity: 100 },
+  { id: 4, name: "External HDD", Category: "Storage", price: 90, quantity: 12 },
+  { id: 5, name: "Smartphone", Category: "Electronics", price: 700, quantity: 25 },
+  { id: 6, name: "Tablet", Category: "Electronics", price: 400, quantity: 18 },
+  { id: 7, name: "Printer", Category: "Office", price: 200, quantity: 5 },
+  { id: 8, name: "Router", Category: "Networking", price: 60, quantity: 22 },
+  { id: 9, name: "Speakers", Category: "Audio", price: 45, quantity: 30 },
+  { id: 10, name: "Projector", Category: "Office", price: 350, quantity: 3 },
 ];
 
 const columns = [
@@ -18,9 +23,14 @@ const columns = [
     key: "id",
   },
   {
-    title: "Name",
+    title: "Product Name",
     dataIndex: "name",
     key: "name",
+  },
+  {
+    title: "Category",
+    dataIndex: "Category",
+    key: "Category",
   },
   {
     title: "Price",
@@ -35,9 +45,7 @@ const columns = [
   {
     title: "Stock",
     key: "stock",
-    render: (_, record) => (
-      record.quantity > 0 ? "In Stock" : "Out of Stock"
-    ),
+    render: (_, record) => (record.quantity > 0 ? "In Stock" : "Out of Stock"),
   },
 ];
 
@@ -77,3 +85,5 @@ export function ProductList() {
     </>
   );
 }
+
+
