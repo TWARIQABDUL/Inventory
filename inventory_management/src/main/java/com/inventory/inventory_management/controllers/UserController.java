@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventory.inventory_management.dto.LoginResponse;
+import com.inventory.inventory_management.dto.RegisterResponse;
 import com.inventory.inventory_management.entities.User;
 import com.inventory.inventory_management.services.LoginService;
 import com.inventory.inventory_management.services.UserService;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User creatUser(@RequestBody User user) {
+    public ResponseEntity<RegisterResponse> creatUser(@RequestBody User user) {
         // return user;
         return userService.creatUser(user);
     }

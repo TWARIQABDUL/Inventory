@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { User, Settings, HelpCircle, LogOut } from 'lucide-react';
 import user from '../assets/images/user.png'
+import { UserContext } from '../context/userContext';
 
-const UserDropdown = ({ onClose }) => {
+const UserDropdown = ({ onClose,userInfo }) => {
+  const {logout }= useContext(UserContext)
+  // console.log(logout,"kkkk");
+  
   return (
     <div className="user-dropdown">
       <div className="dropdown-header">
@@ -12,8 +16,8 @@ const UserDropdown = ({ onClose }) => {
           className="dropdown-avatar"
         />
         <div className="dropdown-user-info">
-          <div className="dropdown-user-name">Jeff</div>
-          <div className="dropdown-user-email">jeff@gmail.com</div>
+          <div className="dropdown-user-name">{userInfo.name}</div>
+          <div className="dropdown-user-email">{userInfo.email}</div>
         </div>
       </div>
       
@@ -36,9 +40,9 @@ const UserDropdown = ({ onClose }) => {
       
       <div className="dropdown-divider"></div>
       
-      <a href="#" className="dropdown-item dropdown-logout">
+      <a className="dropdown-item dropdown-logout" >
         <LogOut size={16} />
-        <span>Sign out</span>
+        <span className='cursor-pointer' onClick={logout} >Sign out</span>
       </a>
     </div>
   );

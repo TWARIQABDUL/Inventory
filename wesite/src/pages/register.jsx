@@ -1,18 +1,50 @@
-import { Card, Form, Row, Col, Input, Button } from 'antd';
+import { Card, Form, Input, Button, message, Space } from 'antd';
 import { Loader } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { data, Link } from 'react-router-dom';
+import axios from 'axios';
+import { data, Link } from 'react-router-dom';
+import axios from 'axios';
 function Register() {
+    const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    // const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    const onFinish = (values) => {
-        console.log('Login details:', values);
+    const success = (content) => {
+        messageApi.open({
+            type: 'success',
+            content: content,
+        });
+    };
+
+    const error = (content) => {
+        messageApi.open({
+            type: 'error',
+            content: content,
+        });
+    };
+    const register = async (values) => {
         setLoading(true);
+        const response = await axios.post(`${baseUrl}/auth/register`,
+                {
+                    email: values.email,
+                    password: values.password,
+                    name: values.uname
+                }
 
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+            ).then(data=>{
+                success(data.mesage)
+                console.log("Foun some data", data);
+                setLoading(false)
+                
+            }).catch(e=>{
+                error(e.response.data.mesage)
+                console.log("oops found Error", e);
+                setLoading(false)
+
+                
+            })
     };
 
     return (
@@ -21,10 +53,11 @@ function Register() {
                 title={<h2 className="text-center text-xl font-semibold">Welcome Back</h2>}
                 className="w-full max-w-md shadow-lg rounded-lg"
             >
+                {contextHolder}
                 <Form
                     name="loginForm"
                     layout="vertical"
-                    onFinish={onFinish}
+                    onFinish={register}
                     size="large"
                 >
                     <Form.Item
@@ -78,7 +111,7 @@ function Register() {
                 <div className="text-center mt-4 text-sm text-gray-600">
                     allready have acount?{' '}
                     <Link
-                        to="/register"
+                        to="/login"
                         className="text-blue-500 hover:text-blue-600 transition-colors"
                     >
                         Sign in

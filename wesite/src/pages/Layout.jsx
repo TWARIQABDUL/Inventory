@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { Outlet } from 'react-router-dom';
 import '../styles/global.css';
-
+import { UserContextProvider } from '../context/userContext';
+import { UserContext } from '../context/userContext'; 
 function Layout() {
+   const { user } = useContext(UserContext);  
+  console.log("Logged in user:", user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  // const user = useContext(UserContextProvider)
+  // console.log(user);
+  
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  return (
+  if (user) {
+    
+  return(
+    // <UserContextProvider>
     <div className="app">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
@@ -24,7 +32,7 @@ function Layout() {
         <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
       )}
     </div>
-  );
+  )}
 }
 
 export default Layout;
