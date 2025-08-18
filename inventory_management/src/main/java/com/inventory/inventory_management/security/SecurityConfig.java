@@ -19,14 +19,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() 
-                        .anyRequest().authenticated()
-                )
-                .cors(Customizer.withDefaults()).authorizeHttpRequests(authorize->authorize.anyRequest().permitAll());
+            .csrf(csrf -> csrf.disable())
+            .cors(Customizer.withDefaults()) // enable CORS first
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll() // login/register are open
+                .anyRequest().authenticated()               // everything else requires auth
+            );
 
-                
         return http.build();
     }
 
@@ -38,7 +37,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // only allow frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); // allow cookies/JWT in headers
