@@ -9,7 +9,6 @@ public class LoginResponse {
     // private String message;
     private String message,name,email;
     private boolean status;
-    private String message;
     
     // private String password;
 
