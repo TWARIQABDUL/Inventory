@@ -3,28 +3,30 @@ import { Alerts } from "../components/Stock-alerts.jsx";
 import { Stats } from "../components/Stats.jsx";
 import { ProductList } from "../components/ProductList.jsx";
 import "../styles/dashboard.css";
-import { Flex } from "antd";
-import { Typography } from 'antd';
-import AnalyticsChart from '../components/charts/BarChart';
+import { Flex, Typography } from "antd";
+import AnalyticsChart from "../components/charts/BarChart";
+import { useInventory } from "../context/InventoryContext";
+
 const { Title } = Typography;
 
-
 export function Dashboard() {
+  const { items } = useInventory();   // 🔥 consume context
+
   return (
     <main className="dashboard">
       <div className="dashboard-content">
-        <Flex justify="space-between" >
+        <Flex justify="space-between">
           <Flex vertical="vertical" gap={0}>
             <Title level={2}>Dashboard</Title>
             <Title level={4}>Overview of Your inventory management System</Title>
           </Flex>
         </Flex>
-        <DashboardTiles />
+        <DashboardTiles items={items} />
         <Flex justify="space-between" gap={30}>
           <Alerts />
-          <Stats />
+          <Stats items={items}/>
         </Flex>
-        <ProductList />
+        <ProductList items={items}/>
       </div>
     </main>
   );

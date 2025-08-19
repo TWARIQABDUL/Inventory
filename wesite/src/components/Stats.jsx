@@ -1,17 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Card, Flex } from "antd";
-import { Typography } from "antd";
-import { LineChartOutlined } from "@ant-design/icons";
-const { Title, Text } = Typography;
+import React, {useEffect, useState} from "react";
+import {Card, Flex} from "antd";
+import {Typography} from "antd";
+import {LineChartOutlined} from "@ant-design/icons";
+const {Title, Text} = Typography;
 
-export const statsList = [
-  { statName: "Total Products:", statValue: "1,234" },
-  { statName: "Low Stock Items:", statValue: "15" },
-  { statName: "Out of Stock:", statValue: "3" },
-  { statName: "Total Asset Value:", statValue: "8" },
-];
-
-function StatsList({ statName, statValue }) {
+function StatsList({statName, statValue}) {
   return (
     <Flex justify="space-between">
       <Title level={5}>{statName}</Title>
@@ -20,26 +13,46 @@ function StatsList({ statName, statValue }) {
   );
 }
 
-export function Stats() {
-  const [statsList, setAlerts] = useState([]);
+export function Stats({items = []}) {
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalItems: 0,
+    totalValue: 0,
+    lowStock: 0,
+    outOfStock: 0,
+  });
+
   useEffect(() => {
-    setTimeout(() => {
-      const statsList = [
-        { statName: "Total Products:", statValue: "1,234" },
-        { statName: "Low Stock Items:", statValue: "15" },
-        { statName: "Out of Stock:", statValue: "3" },
-        { statName: "Total Asset Value:", statValue: "8" },
-      ];
-      setAlerts(statsList);
-      setLoading(false);
-    }, 3000);
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const totalItems = items.length;
+    const totalValue = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const lowStock = items.filter(
+      (item) => item.quantity > 0 && item.quantity <= 5
+    ).length;
+    const outOfStock = items.filter((item) => item.quantity === 0).length;
+
+    setStats({totalItems, totalValue, lowStock, outOfStock});
+  }, [items]);
+
+  const statsList = [
+    {statName: "Total Products:", statValue: stats.totalItems},
+    {statName: "Low Stock Items:", statValue: stats.lowStock},
+    {statName: "Out of Stock:", statValue: stats.outOfStock},
+    {statName: "Total Asset Value:", statValue: stats.totalValue},
+  ];
+
   return (
     <Card
       title={
         <span>
-          <LineChartOutlined />
+          <LineChartOutlined/>
           Quick Stats
         </span>
       }

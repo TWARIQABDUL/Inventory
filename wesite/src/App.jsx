@@ -12,24 +12,25 @@ import Analytics from './pages/analytics';
 import LoginPage from './pages/login';
 import Register from './pages/register.jsx';
 import { UserContextProvider } from './context/userContext.jsx';
+import { InventoryProvider } from './context/InventoryContext.jsx';   // ✅ import
 
 function App() {
   return (
     <BrowserRouter>
-      {/* 👇 Wrap ALL routes inside UserContextProvider */}
       <UserContextProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/sales" element={<Sales />} />
-            <Route path="/purchase" element={<Purchase />} />
-            <Route path="/analytics" element={<Analytics />} />
-          </Route>
-
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
+        <InventoryProvider>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/sales" element={<Sales />} />
+              <Route path="/purchase" element={<Purchase />} />
+              <Route path="/analytics" element={<Analytics />} />
+            </Route>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </InventoryProvider>
       </UserContextProvider>
     </BrowserRouter>
   );
