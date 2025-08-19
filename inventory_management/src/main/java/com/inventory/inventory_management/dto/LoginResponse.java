@@ -14,7 +14,7 @@ public class LoginResponse {
 
     public LoginResponse(String message, User user,boolean status){
         this.message = message;
-        this.name = user.getName();
+        this.name = user.getFirstName()+" " + user.getLastName();
         this.email = user.getEmail();
         this.status = status;
     }

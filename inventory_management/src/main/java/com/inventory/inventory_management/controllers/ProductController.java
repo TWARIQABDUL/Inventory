@@ -1,46 +1,52 @@
 package com.inventory.inventory_management.controllers;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.inventory.inventory_management.dto.ProductAddeResponse;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.services.ProductService;
-import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-  private final ProductService service;
+  private ProductService productService;
 
-  public ProductController(ProductService service) {
-    this.service = service;
+  public ProductController(ProductService productService){
+    this.productService = productService;
+  }
+
+  @PostMapping
+  ResponseEntity<ProductAddeResponse> addProduct(@RequestBody Product product){
+    System.out.println("I got "+ product.getName());
+    return productService.addProduct(product);
   }
 
   @GetMapping
   public List<Product> getAllProducts() {
-    return service.getAllProducts();
+    return productService.getAllProducts();
   }
 
-  @GetMapping("/{id}")
-  public Product getProductById(@PathVariable Long id) {
-    return service.getProductById(id);
+  @GetMapping("/{productId}")
+  public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
+    return productService.getProductById(productId)
+      .map(ResponseEntity::ok)
+      .orElse(ResponseEntity.notFound().build());
   }
 
-  @PostMapping
-  public Product saveProduct(@RequestBody Product product) {
-    return service.saveProduct(product);
+  @PutMapping("/{productId}")
+  public ResponseEntity<Product> updateProduct(@PathVariable Long productId, @RequestBody Product productDetails) {
+    try {
+      return ResponseEntity.ok(productService.updateProduct(productId, productDetails));
+    } catch (RuntimeException e) {
+      return ResponseEntity.notFound().build();
+    }
   }
 
-  @PutMapping("/{id}")
-  public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
-    Product existing = getProductById(id);
-    existing.setProductName(updatedProduct.getProductName());
-    existing.setProductCategory(updatedProduct.getProductCategory());
-    existing.setQuantity(updatedProduct.getQuantity());
-    existing.setPrice(updatedProduct.getPrice());
-    existing.setIsStock(updatedProduct.getIsStock());
-    return service.saveProduct(existing);
-  }
-
-  @DeleteMapping("/{id}")
-  public void deleteProduct(@PathVariable Long id) {
-    service.deleteProduct(id);
+  @DeleteMapping("/{productId}")
+  public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+    productService.deleteProduct(productId);
+    return ResponseEntity.noContent().build();
   }
 }
