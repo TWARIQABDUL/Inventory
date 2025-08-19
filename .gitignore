@@ -28,3 +28,4 @@ Thumbs.db
 
 # Optional cache
 wesite/.cache/
+node_modules

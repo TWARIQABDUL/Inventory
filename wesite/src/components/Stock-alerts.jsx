@@ -1,41 +1,39 @@
-import React, {useEffect, useState} from "react";
-import warning_yellow from "../assets/images/warning-yellow.png";
+import React, { useEffect, useState } from "react";
+import { Card, List, Spin, Tag, Typography, Flex } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import "../styles/dashboard.css";
+const { Text } = Typography;
+
+function getStockStatus(stock) {
+  if (stock <= 50 && stock > 0) {
+    return { text: "Low Stock", color: "red" };
+  } else if (stock > 50 && stock < 100) {
+    return { text: "Medium Stock", color: "gold" };
+  }
+  return { text: "In Stock", color: "green" };
+}
 
 export function StockAlerts({ productName, stock, category }) {
+  const status = getStockStatus(stock);
   return (
-    <div className="alert-container">
-      <div className="product">
-        <div className="product-name">{productName}</div>
-        <div className="product-category">{category}</div>
-      </div>
-      <div className="stock-level">
-        <div
-          className={`stock-level-good ${
-            stock <= 50 && stock > 0
-              ? "stock-level-bad"
-              : stock > 50 && stock < 100
-              ? "stock-level-medium"
-              : ""
-          }`}
-        >
-          {` ${
-            stock <= 50 && stock > 0
-              ? "Low Stock"
-              : stock > 50 && stock < 100
-              ? "medium Stock"
-              : "In stock"
-          }`}
-        </div>
-        <div className="stock-level-value">{stock}</div>
-      </div>
-    </div>
+    <List.Item>
+      <Card size="small" style={{ width: "100%" }}>
+        <Flex justify="space-between" align="center">
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <Text strong>{productName}</Text>
+            <Text>{category}</Text>
+          </div>
+          <Tag color={status.color}>{status.text}</Tag>
+        </Flex>
+      </Card>
+    </List.Item>
   );
 }
 
 export function Alerts() {
   const [StockAlertsList, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     setTimeout(() => {
       const StockAlertsList = [
@@ -51,24 +49,28 @@ export function Alerts() {
   }, []);
 
   return (
-    <div className="stock-alerts">
-      <div className="stock-alerts-title">
-        <img src={warning_yellow} alt="Stock warning indicator" />
-        <h2>Stock Alerts</h2>
-      </div>
-      {loading && <div className="spinner"></div>}
-      <div className="stock-alerts-list">
-        {StockAlertsList.map((alert) => {
-          return (
-            <StockAlerts
-              key={alert.productName}
-              productName={alert.productName}
-              stock={alert.stock}
-              category={alert.category}
-            />
-          );
-        })}
-      </div>
-    </div>
+    <Card
+      title={
+        <span>
+          <ExclamationCircleOutlined
+            style={{ color: "#faad14", marginRight: 8 }}
+          />
+          Stock Alerts
+        </span>
+      }
+      style={{width: "100%" }}
+    >
+      <List
+        dataSource={StockAlertsList}
+        renderItem={(alert, index) => (
+          <StockAlerts
+            key={alert.productName + index}
+            productName={alert.productName}
+            stock={alert.stock}
+            category={alert.category}
+          />
+        )}
+      />
+    </Card>
   );
 }

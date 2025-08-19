@@ -1,75 +1,66 @@
 import React, { useState, useEffect } from "react";
-import { Package, DollarSign, AlertTriangle } from "lucide-react";
-import "../styles/dashboard.css";
+import { Card, Col, Row, Statistic, Typography } from "antd";
+import {
+  ShoppingOutlined,
+  DollarOutlined,
+  WarningOutlined,
+} from "@ant-design/icons";
+const { Text } = Typography;
 
-export function DashboardTile({titleName, titleIcon, tileBody, tileFooter, iconColor}) {
-  return (
-    <div className="dashboard-tile">
-      <div className="tile-header">
-        <div className="tile-title">
-          <h1>{titleName}</h1>
-        </div>
-        <div className="title-icon">{React.createElement(titleIcon, { size: 24, color: iconColor })}</div>
-      </div>
-      <div className="tile-body">{tileBody}</div>
-      <div className="tile-footer">{tileFooter}</div>
-    </div>
-  );
-}
+const tileData = [
+  {
+    key: "total-items",
+    title: "Total Items",
+    icon: <ShoppingOutlined style={{ fontSize: 24, color: "#1890ff" }} />,
+    value: 12,
+    footer: "+0 items added this week",
+  },
+  {
+    key: "total-value",
+    title: "Total Value",
+    icon: <DollarOutlined style={{ fontSize: 24, color: "#52c41a" }} />,
+    value: 31771,
+    prefix: "$",
+    footer: "Inventory worth",
+  },
+  {
+    key: "low-stock",
+    title: "Low Stock",
+    icon: <WarningOutlined style={{ fontSize: 24, color: "#faad14" }} />, 
+    value: 2,
+    footer: "Items need restocking",
+  },
+  {
+    key: "out-of-stock",
+    title: "Out of Stock",
+    icon: <WarningOutlined style={{ fontSize: 24, color: "#f5222d" }} />,
+    value: 2,
+    footer: "Items Unavailable",
+  },
+];
 
 export default function DashboardTiles() {
-  const [tiles, setTiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      const fetchedData = [
-        {
-          titleName: "Total Items",
-          titleIcon: Package,
-          tileBody: "12",
-          tileFooter: "+0 items added this week",
-        },
-        {
-          titleName: "Total Value",
-          titleIcon: DollarSign,
-          tileBody: "$31,771.1",
-          tileFooter: "Inventory worth",
-        },
-        {
-          titleName: "Low Stock",
-          titleIcon: AlertTriangle,
-          tileBody: "2",
-          tileFooter: "Items need restocking",
-          iconColor: "#ffcc00",
-        },
-        {
-          titleName: "Out of Stock",
-          titleIcon: AlertTriangle,
-          tileBody: "2",
-          tileFooter: "Items Unavailable",
-          iconColor: "#ff0000",
-        },
-      ];
-      setTiles(fetchedData);
+    const timer = setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="dashboard-tiles">
-      {loading && <div className="spinner"></div>}
-      {tiles.map((tile) => (
-        <DashboardTile
-          key={tile.titleName}
-          titleName={tile.titleName}
-          titleIcon={tile.titleIcon}
-          tileBody={tile.tileBody}
-          tileFooter={tile.tileFooter}
-          iconColor={tile.iconColor}
-          loading={loading}
-        />
+    <Row gutter={[16, 16]}>
+      {tileData.map((tile) => (
+        <Col key={tile.key} xs={24} sm={12} lg={6}>
+          <Card title={tile.title} extra={tile.icon} loading={loading}>
+            <Statistic value={tile.value} prefix={tile.prefix} />
+            <Text type="primary" style={{ marginTop: 8, display: "block" }}>
+              {tile.footer}
+            </Text>
+          </Card>
+        </Col>
       ))}
-    </div>
+    </Row>
   );
 }
