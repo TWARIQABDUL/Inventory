@@ -12,7 +12,7 @@ public class RegisterResponse {
     public RegisterResponse(User user,String message,Boolean status){
         this.mesage = message;
         this.email = user.getEmail();
-        this.name = user.getName();
+        this.name = user.getFirstName()+" " + user.getLastName();
         this.status = status;
     }
 }

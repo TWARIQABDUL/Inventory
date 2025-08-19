@@ -1,30 +1,34 @@
 package com.inventory.inventory_management.entities;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
-import jakarta.persistence.Table;
 
-@Data
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private Long userId;
     @Column(nullable = false)
-    private String name;
-    
-    @Column(nullable = false,unique = true)
+    private String username;
+    @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     private String password;
-    public User() {}
+    @Column(nullable = false)
+    private String firstName;
+    // @Column(nullable = false)
+    private String lastName;    
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 }
-
-
