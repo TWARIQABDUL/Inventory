@@ -3,8 +3,6 @@ import { Loader } from 'lucide-react';
 import React, { useState } from 'react';
 import { data, Link } from 'react-router-dom';
 import axios from 'axios';
-import { data, Link } from 'react-router-dom';
-import axios from 'axios';
 function Register() {
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false);

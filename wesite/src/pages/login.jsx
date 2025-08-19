@@ -1,20 +1,17 @@
-import { Card, Form, Input, Button, message, Space, Row, Col } from 'antd';
-
-import { Loader } from 'lucide-react';
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {Card, Form, Input, Button, message, Space, Row, Col} from 'antd';
+import {Loader} from 'lucide-react';
+import React, {useContext, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import { UserContext } from '../context/userContext';
+import {UserContext} from '../context/userContext';
 
 function LoginPage() {
   const [messageApi, contextHolder] = message.useMessage();
-     const { useUser,setUser } = useContext(UserContext);  
-     console.log("here ",useUser);
-     
-  
+  const {useUser, setUser} = useContext(UserContext);
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const  navigator  = useNavigate()
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
   const success = (content) => {
     messageApi.open({
       type: 'success',
@@ -28,32 +25,23 @@ function LoginPage() {
       content: content,
     });
   };
+
   const login = async (values) => {
     setLoading(true);
-
-    const response = await axios.post(`${baseUrl}/auth/login`,
-      {
+    try {
+      const {data} = await axios.post(`${baseUrl}/auth/login`, {
         email: values.email,
         password: values.password,
-      }
-
-    ).then(data => {
-      localStorage.setItem("user", JSON.stringify(data.data))
-      success(data.mesage)
-      setUser(data.data)
-      console.log("Found some data", data);
-
-      setLoading(false)
-      navigator("/")
-
-    }).catch(e => {
-      error("user not found")
-      // error(e.response.data.mesage)
-      console.log("oops found Error", e);
-      setLoading(false)
-
-
-    })
+      });
+      localStorage.setItem("user", JSON.stringify(data));
+      success(data.message);
+      setUser(data);
+      setLoading(false);
+      navigate("/");
+    } catch (err) {
+      error("User not found");
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,19 +61,19 @@ function LoginPage() {
             label="Email"
             name="email"
             rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Enter a valid email address' }
+              {required: true, message: 'Please enter your email'},
+              {type: 'email', message: 'Enter a valid email address'}
             ]}
           >
-            <Input placeholder="Enter your email" />
+            <Input placeholder="Enter your email"/>
           </Form.Item>
 
           <Form.Item
             label="Password"
             name="password"
-            rules={[{ required: true, message: 'Please enter your password' }]}
+            rules={[{required: true, message: 'Please enter your password'}]}
           >
-            <Input.Password placeholder="Enter your password" />
+            <Input.Password placeholder="Enter your password"/>
           </Form.Item>
 
           <Row justify="space-between" className="mb-4">
@@ -106,7 +94,7 @@ function LoginPage() {
             className="flex items-center justify-center gap-2"
             disabled={loading}
           >
-            {loading && <Loader className="animate-spin w-4 h-4" />}
+            {loading && <Loader className="animate-spin w-4 h-4"/>}
             {loading ? 'Logging in...' : 'Login'}
           </Button>
         </Form>
