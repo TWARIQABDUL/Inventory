@@ -13,6 +13,7 @@ export const UserContextProvider = ({ children }) => {
   });
   const logout =()=>{
     setUser(null)
+    localStorage.removeItem("user")
     navigate("/login")
   }
 
