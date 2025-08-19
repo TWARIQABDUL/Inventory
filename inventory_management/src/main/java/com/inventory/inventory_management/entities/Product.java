@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "products")
@@ -41,5 +42,6 @@ public class Product {
     private PriceList priceList;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("product-orderItems")
     private List<OrderItem> orderItems;
 }

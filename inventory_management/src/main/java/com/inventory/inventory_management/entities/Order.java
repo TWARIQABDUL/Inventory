@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "orders")
 @Getter
@@ -32,11 +35,14 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference("user-orders")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("order-orderItems")
     private List<OrderItem> orderItems;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("order-transactions")
     private List<Transaction> transactions;
 }

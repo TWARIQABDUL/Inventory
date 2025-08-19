@@ -6,6 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "transactions")
 @Getter
@@ -25,7 +27,8 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Orders order;
+    @JsonBackReference("order-transactions")
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "payment_mode_id")
