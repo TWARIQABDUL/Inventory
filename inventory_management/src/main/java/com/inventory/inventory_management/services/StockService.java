@@ -1,6 +1,7 @@
 package com.inventory.inventory_management.services;
 
 import com.inventory.inventory_management.entities.Stock;
+import com.inventory.inventory_management.dto.CreateStockDto;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.repository.StockRepository;
 import com.inventory.inventory_management.repository.ProductRepository;
@@ -20,15 +21,19 @@ public class StockService {
         this.productRepository = productRepository;
     }
 
-    public ResponseEntity<Object> createStock(Stock stock) {
+    public ResponseEntity<?> createStock(Stock stock) {
         if (stock.getProduct() != null && stock.getProduct().getProductId() != null) {
             Optional<Product> existingProduct = productRepository.findById(stock.getProduct().getProductId());
             if (existingProduct.isPresent()) {
                 stock.setProduct(existingProduct.get());
                 Stock savedStock = stockRepository.save(stock);
-                return ResponseEntity.ok(savedStock);
+                return ResponseEntity.ok(
+                    new CreateStockDto(savedStock.getQuantity(), savedStock.getProduct().getName())
+
+                );
             } else {
-                return ResponseEntity.badRequest().body("Product not found.");
+                return ResponseEntity.badRequest().body("Something went wrong"
+                );
             }
         }
         return ResponseEntity.badRequest().body("Product ID must be provided.");

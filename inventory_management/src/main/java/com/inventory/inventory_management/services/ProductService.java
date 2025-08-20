@@ -23,11 +23,11 @@ public class ProductService {
     try {
       productRepository.save(product);
       return ResponseEntity.ok(
-        new ProductAddeResponse("Product Added Success full "+product,true)
+        new ProductAddeResponse("Product Added Success full ",true,product.getProductId())
       );
     } catch (Exception e) {
       return ResponseEntity.ok(
-        new ProductAddeResponse("Something went wrong "+e,false)
+        new ProductAddeResponse("Something went wrong ",false,product.getProductId())
       );
     }
   }

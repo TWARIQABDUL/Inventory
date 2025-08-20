@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Table, Button, Input, Select, InputNumber, Switch, Form, Modal, Tag, Space } from "antd";
+import { Table, Button, Input, Select, InputNumber, Switch, Form, Modal, Tag, Space, Steps } from "antd";
 import { PlusOutlined, FilterOutlined } from "@ant-design/icons";
 import { useInventory } from "../context/InventoryContext";
 
 const { Option } = Select;
 
 export default function Inventory() {
+  const [current, setCurrent] = useState(0);
   const { items, setItems } = useInventory();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
@@ -13,6 +14,7 @@ export default function Inventory() {
   const [categories, setCategories] = useState(["Electronics", "Clothing", "Books", "Groceries", "Furniture"]);
   const [form] = Form.useForm();
   const [categoryForm] = Form.useForm();
+  const { Step } = Steps;
 
   const handleAddItem = (values) => {
     const newItem = {
@@ -45,9 +47,128 @@ export default function Inventory() {
     { title: "In Stock", dataIndex: "inStock", key: "inStock", render: (inStock) => inStock ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag> },
   ];
 
+  // test step form 
+   const steps = [
+    {
+      title: "User Info",
+      content: (
+        <>
+          <Form.Item
+            name="username"
+            label="Username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, type: "email", message: "Enter a valid email!" }]}
+          >
+            <Input />
+          </Form.Item>
+        </>
+      ),
+    },
+    {
+      title: "Password",
+      content: (
+        <>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            label="Confirm Password"
+            dependencies={["password"]}
+            rules={[
+              { required: true, message: "Please confirm your password!" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Passwords do not match!"));
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+        </>
+      ),
+    },
+    {
+      title: "Review",
+      content: (
+        <p>
+          Click **Submit** to complete registration.
+        </p>
+      ),
+    },
+  ];
+
+  const next = async () => {
+    try {
+      // validate fields of the current step before moving on
+      await form.validateFields();
+      setCurrent(current + 1);
+    } catch (err) {
+      console.log("Validation failed:", err);
+    }
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const onFinish = (values) => {
+    message.success("Form submitted successfully!");
+    console.log("Form values:", values);
+  };
+
+
   return (
     <div style={{ padding: 20, background: "#f5f7fa", minHeight: "100vh" }}>
       <h1 style={{ fontSize: 28, marginBottom: 20 }}>Inventory</h1>
+
+      {/* step form */}
+      <Steps current={current} className="mb-6">
+        {steps.map((item) => (
+          <Step key={item.title} title={item.title} />
+        ))}
+      </Steps>
+
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+      >
+        {steps[current].content}
+
+        <div style={{ marginTop: 24, marginBottom: 10 }}>
+          {current > 0 && (
+            <Button style={{ marginRight: 8 }} onClick={prev}>
+              Previous
+            </Button>
+          )}
+          {current < steps.length - 1 && (
+            <Button type="primary" onClick={next}>
+              Next
+            </Button>
+          )}
+          {current === steps.length - 1 && (
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          )}
+        </div>
+      </Form>
+      {/* -------------- */}
       <Space style={{ marginBottom: 20 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalVisible(true)}>
           Add Item

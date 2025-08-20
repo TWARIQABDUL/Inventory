@@ -19,7 +19,7 @@ public class PriceListController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createPriceList(@RequestBody PriceList priceList) {
+    public ResponseEntity<?> createPriceList(@RequestBody PriceList priceList) {
         return priceListService.createPriceList(priceList);
     }
 

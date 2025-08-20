@@ -1,6 +1,7 @@
 package com.inventory.inventory_management.services;
 
 import com.inventory.inventory_management.dto.PriceListDto;
+import com.inventory.inventory_management.dto.PriceResponseDto;
 import com.inventory.inventory_management.entities.PriceList;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.repository.PriceListRepository;
@@ -22,13 +23,15 @@ public class PriceListService {
         this.productRepository = productRepository;
     }
 
-    public ResponseEntity<Object> createPriceList(PriceList priceList) {
+    public ResponseEntity<?> createPriceList(PriceList priceList) {
         if (priceList.getProduct() != null && priceList.getProduct().getProductId() != null) {
             Optional<Product> existingProduct = productRepository.findById(priceList.getProduct().getProductId());
             if (existingProduct.isPresent()) {
                 priceList.setProduct(existingProduct.get());
                 PriceList savedPriceList = priceListRepository.save(priceList);
-                return ResponseEntity.ok(savedPriceList);
+                return ResponseEntity.ok(
+                    new PriceResponseDto(savedPriceList.getProduct().getName(),savedPriceList.getProduct().getProductId(),savedPriceList.getPrice(),"Product Added Success")
+                );
             } else {
                 return ResponseEntity.badRequest().body("Product not found.");
             }
