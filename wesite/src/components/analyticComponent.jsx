@@ -10,14 +10,6 @@ import MyTable from './tablecomponent';
 function AnalyticsComponent() {
   const [loading, setLoading] = useState(true);
   const { dynData, Sortdata, filterd, refresh } = useContext(AnalyticsContext);
-  // const data = [
-  //   { name: 'Page ', uv: 400, pv: 2400, amt: 2700 },
-  //   { name: 'Page B', uv: 300, pv: 2000, amt: 2210 },
-  //   { name: 'Page C', uv: 800, pv: 9800, amt: 2290 },
-  //   { name: 'Page D', uv: 278, pv: 3908, amt: 2000 },
-  //   { name: 'Page D', uv: 278, pv: 3908, amt: 2000 },
-
-  // ];
 
   console.log("I filtered", filterd);
 
