@@ -1,45 +1,30 @@
-import { useReducer, useState, useEffect } from "react";
-import {
-  Button,
-  Flex,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  Space,
-  Switch,
-  Table,
-  Tag,
-  Typography,
-  Steps,
-  message,
-} from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import { useInventory } from "../context/InventoryContext";
+import {useEffect, useReducer, useState} from "react";
+import {Button, Flex, Form, Input, InputNumber, message, Modal, Select, Space, Steps, Switch, Table, Tag, Typography} from "antd";
+import {PlusOutlined} from "@ant-design/icons";
+import {useInventory} from "../context/InventoryContext";
 
-const { Option } = Select;
-const { Title } = Typography;
-const { Step } = Steps;
+const {Option} = Select;
+const {Title} = Typography;
+const {Step} = Steps;
 
 export default function Inventory() {
-  const { items, setItems } = useInventory();
+  const {items, setItems} = useInventory();
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const initialState = {
     isModalVisible: false,
     isCategoryModalVisible: false,
-    filters: { category: null, inStock: null },
+    filters: {category: null, inStock: null},
   };
 
   const reducer = (state, action) => {
     switch (action.type) {
       case "TOGGLE_MODAL":
-        return { ...state, isModalVisible: action.payload };
+        return {...state, isModalVisible: action.payload};
       case "TOGGLE_CATEGORY_MODAL":
-        return { ...state, isCategoryModalVisible: action.payload };
+        return {...state, isCategoryModalVisible: action.payload};
       case "SET_FILTERS":
-        return { ...state, filters: action.payload };
+        return {...state, filters: action.payload};
       default:
         return state;
     }
@@ -47,13 +32,11 @@ export default function Inventory() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const [form] = Form.useForm();
+  const [categoryForm] = Form.useForm();
   const [current, setCurrent] = useState(0);
   const [productId, setProductId] = useState(null);
-
-  // ✅ Categories state
   const [categories, setCategories] = useState([]);
 
-  // ✅ Fetch categories on mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -74,17 +57,15 @@ export default function Inventory() {
   const handleSubmit = async (values) => {
     try {
       let res;
-
-      // Step 1: Add Product
       if (current === 0) {
         res = await fetch(`${baseUrl}/products`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
             name: values.name,
             description: values.description,
             taxable: values.taxable,
-            category: { categoryId: values.categoryId },
+            category: {categoryId: values.categoryId},
           }),
         });
         const data = await res.json();
@@ -94,35 +75,31 @@ export default function Inventory() {
           next();
         }
       }
-
-      // Step 2: Add Price
       if (current === 1) {
         res = await fetch(`${baseUrl}/price-lists`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
             price: values.price,
-            product: { productId },
+            product: {productId},
           }),
         });
         const data = await res.json();
         message.success(data.message);
         next();
       }
-
-      // Step 3: Add Stock
       if (current === 2) {
         res = await fetch(`${baseUrl}/stock`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
             quantity: values.quantity,
-            product: { productId },
+            product: {productId},
           }),
         });
         const data = await res.json();
         message.success(`${data.quantity} units added for ${data.productName}`);
-        dispatch({ type: "TOGGLE_MODAL", payload: false });
+        dispatch({type: "TOGGLE_MODAL", payload: false});
         form.resetFields();
         setCurrent(0);
       }
@@ -132,7 +109,6 @@ export default function Inventory() {
     }
   };
 
-  // ✅ Steps definition (dynamic categories in Select)
   const steps = [
     {
       title: "Add Product",
@@ -141,27 +117,27 @@ export default function Inventory() {
           <Form.Item
             name="name"
             label="Product Name"
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
           >
-            <Input placeholder="Enter product name" />
+            <Input placeholder="Enter product name"/>
           </Form.Item>
 
           <Form.Item
             name="description"
             label="Description"
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
           >
-            <Input.TextArea rows={3} placeholder="Enter product description" />
+            <Input.TextArea rows={3} placeholder="Enter product description"/>
           </Form.Item>
 
           <Form.Item name="taxable" label="Taxable" valuePropName="checked">
-            <Switch />
+            <Switch/>
           </Form.Item>
 
           <Form.Item
             name="categoryId"
             label="Category"
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
           >
             <Select
               placeholder="Select Category"
@@ -188,15 +164,15 @@ export default function Inventory() {
           <Form.Item
             name="price"
             label="Price"
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
           >
-            <InputNumber min={0} step={0.01} style={{ width: "100%" }} />
+            <InputNumber min={0} step={0.01} style={{width: "100%"}}/>
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
             Submit Price
           </Button>
-          <Button style={{ marginLeft: 8 }} onClick={prev}>
+          <Button style={{marginLeft: 8}} onClick={prev}>
             Previous
           </Button>
         </Form>
@@ -209,15 +185,15 @@ export default function Inventory() {
           <Form.Item
             name="quantity"
             label="Quantity"
-            rules={[{ required: true }]}
+            rules={[{required: true}]}
           >
-            <InputNumber min={1} style={{ width: "100%" }} />
+            <InputNumber min={1} style={{width: "100%"}}/>
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
             Submit Stock
           </Button>
-          <Button style={{ marginLeft: 8 }} onClick={prev}>
+          <Button style={{marginLeft: 8}} onClick={prev}>
             Previous
           </Button>
         </Form>
@@ -225,7 +201,6 @@ export default function Inventory() {
     },
   ];
 
-  // ✅ Table now shows category name instead of just ID
   const columns = [
     {
       title: "ID",
@@ -267,27 +242,27 @@ export default function Inventory() {
   ];
 
   return (
-    <div style={{ padding: 20, background: "#f5f7fa", minHeight: "100vh" }}>
-      <Space direction={"vertical"} size={20} style={{ width: "100%" }}>
-        <Flex justify={"space-between"}>
+    <div style={{padding: 20, background: "#f5f7fa", minHeight: "100vh"}}>
+      <Space direction="vertical" size={20} style={{width: "100%"}}>
+        <Flex justify="space-between">
           <Title level={2}>Inventory Management</Title>
-          <div style={{ display: "flex", gap: 10 }}>
+          <div style={{display: "flex", gap: 10}}>
             <Button
               type="primary"
-              size={"large"}
-              icon={<PlusOutlined />}
+              size="large"
+              icon={<PlusOutlined/>}
               onClick={() =>
-                dispatch({ type: "TOGGLE_MODAL", payload: true })
+                dispatch({type: "TOGGLE_MODAL", payload: true})
               }
             >
               Add Inventory
             </Button>
             <Button
               type="default"
-              size={"large"}
-              icon={<PlusOutlined />}
+              size="large"
+              icon={<PlusOutlined/>}
               onClick={() =>
-                dispatch({ type: "TOGGLE_CATEGORY_MODAL", payload: true })
+                dispatch({type: "TOGGLE_CATEGORY_MODAL", payload: true})
               }
             >
               Add Category
@@ -299,25 +274,78 @@ export default function Inventory() {
           columns={columns}
           dataSource={items}
           bordered
-          pagination={{ pageSize: 8 }}
+          pagination={{pageSize: 8}}
           rowKey="id"
         />
       </Space>
 
-      {/* Add Inventory Modal with Steps */}
+      <Modal
+        title="Add Category"
+        open={state.isCategoryModalVisible}
+        onCancel={() =>
+          dispatch({ type: "TOGGLE_CATEGORY_MODAL", payload: false })
+        }
+        footer={null}
+      >
+        <Form
+          form={categoryForm}
+          layout="vertical"
+          onFinish={async (values) => {
+            try {
+              const res = await fetch(`${baseUrl}/category`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: values.categoryName }),
+              });
+
+              const data = await res.json();
+
+              if (res.ok) {
+                message.success("Category added successfully!");
+                // refresh categories
+                setCategories((prev) => [...prev, data]);
+                dispatch({ type: "TOGGLE_CATEGORY_MODAL", payload: false });
+                categoryForm.resetFields();
+              } else {
+                message.error(data.message || "Failed to add category");
+              }
+            } catch (err) {
+              console.error("Error adding category:", err);
+              message.error("Something went wrong while adding category");
+            }
+          }}
+        >
+          <Form.Item
+            label="Category Name"
+            name="categoryName"
+            rules={[{ required: true, message: "Please enter category name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Add Category
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <Modal
         title="Add Inventory"
         open={state.isModalVisible}
+        onCancel={() => {
+          dispatch({type: "TOGGLE_MODAL", payload: false});
+          setCurrent(0);
+          form.resetFields();
+        }}
         footer={null}
-        onCancel={() => dispatch({ type: "TOGGLE_MODAL", payload: false })}
-        width={600}
       >
         <Steps current={current}>
-          {steps.map((item) => (
-            <Step key={item.title} title={item.title} />
+          {steps.map(item => (
+            <Step key={item.title} title={item.title}/>
           ))}
         </Steps>
-        <div style={{ marginTop: 30 }}>{steps[current].content}</div>
+        <div style={{marginTop: 24}}>{steps[current].content}</div>
       </Modal>
     </div>
   );
