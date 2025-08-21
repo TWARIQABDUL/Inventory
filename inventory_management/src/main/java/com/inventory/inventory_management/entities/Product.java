@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "products")
 @Getter
@@ -27,14 +30,18 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonBackReference("category-products")
     private ProductCategory category;
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference("product-stock")
     private Stock stock;
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference("product-priceList")
     private PriceList priceList;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("product-orderItems")
     private List<OrderItem> orderItems;
 }

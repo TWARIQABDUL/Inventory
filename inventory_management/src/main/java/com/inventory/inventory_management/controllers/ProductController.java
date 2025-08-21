@@ -2,6 +2,7 @@ package com.inventory.inventory_management.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.inventory.inventory_management.dto.AllProduct;
 import com.inventory.inventory_management.dto.ProductAddeResponse;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.services.ProductService;
@@ -24,7 +25,7 @@ public class ProductController {
   }
 
   @GetMapping
-  public List<Product> getAllProducts() {
+  public List<AllProduct> getAllProducts() {
     return productService.getAllProducts();
   }
 

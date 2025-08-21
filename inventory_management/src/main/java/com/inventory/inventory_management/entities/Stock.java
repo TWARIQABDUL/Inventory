@@ -1,5 +1,7 @@
 package com.inventory.inventory_management.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +21,7 @@ public class Stock {
     private Integer quantity;
 
     @OneToOne
+    @JsonManagedReference("product-stock")
     @JoinColumn(name = "product_id", unique = true)
     private Product product;
 }
