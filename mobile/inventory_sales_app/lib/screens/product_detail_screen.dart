@@ -14,7 +14,9 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int qty = 1;
-  final cart = Get.find<CartController>();
+  final cart = Get.isRegistered<CartController>()
+      ? Get.find<CartController>()
+      : Get.put(CartController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             const SizedBox(height: 16),
             Text(product.name, style: AppTheme.heading2),
             const SizedBox(height: 8),
-            Chip(label: Text(product.category.name)),
+            Wrap(
+              spacing: 8,
+              children: [
+                Chip(label: Text(product.category.name)),
+                if (product.taxable) const Chip(label: Text('VAT'), backgroundColor: Color(0xFFFFF3CD)),
+              ],
+            ),
             const SizedBox(height: 12),
             Text(currency.format(product.priceList.price), style: const TextStyle(color: AppTheme.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),

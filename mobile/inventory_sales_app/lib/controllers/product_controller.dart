@@ -22,12 +22,14 @@ class ProductController extends GetxController {
     isLoading.value = true;
     error.value = '';
     await Future.delayed(const Duration(milliseconds: 600));
+
     categories.assignAll([
-      ProductCategory(categoryId: 1, name: 'Electronics'),
-      ProductCategory(categoryId: 2, name: 'Clothing'),
-      ProductCategory(categoryId: 3, name: 'Books'),
-      ProductCategory(categoryId: 4, name: 'Home & Garden'),
+      ProductCategory(categoryId: 1, name: 'Electronics', description: 'Phones, laptops, accessories'),
+      ProductCategory(categoryId: 2, name: 'Clothing', description: 'Men, women and kids apparel'),
+      ProductCategory(categoryId: 3, name: 'Books', description: 'Fiction, non-fiction and textbooks'),
+      ProductCategory(categoryId: 4, name: 'Home & Garden', description: 'Furniture, appliances and decor'),
     ]);
+
     products.assignAll([
       Product(
         productId: 1,

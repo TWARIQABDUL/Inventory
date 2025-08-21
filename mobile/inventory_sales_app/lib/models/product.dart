@@ -45,16 +45,19 @@ class Product {
 class ProductCategory {
   final int categoryId;
   final String name;
+  final String description;
 
   ProductCategory({
     required this.categoryId,
     required this.name,
+    required this.description,
   });
 
   factory ProductCategory.fromJson(Map<String, dynamic> json) {
     return ProductCategory(
       categoryId: json['categoryId'] ?? 0,
       name: json['name'] ?? '',
+      description: json['description'] ?? '',
     );
   }
 
@@ -62,6 +65,7 @@ class ProductCategory {
     return {
       'categoryId': categoryId,
       'name': name,
+      'description': description,
     };
   }
 }

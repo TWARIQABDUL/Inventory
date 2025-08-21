@@ -39,14 +39,29 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(product.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
+              Text(
+                product.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                product.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.body2,
+              ),
               const SizedBox(height: 4),
-              Text(product.category.name, style: AppTheme.body2),
+              Text(product.category.name, style: AppTheme.caption),
               const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(currency.format(product.priceList.price), style: const TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w700)),
+                  Text(
+                    currency.format(product.priceList.price),
+                    style: const TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w700),
+                  ),
                   IconButton(
                     onPressed: product.stock.quantity > 0
                         ? () {
@@ -59,7 +74,10 @@ class ProductCard extends StatelessWidget {
                             }
                           }
                         : null,
-                    icon: Icon(isInCart ? Icons.remove_shopping_cart : Icons.add_shopping_cart, color: isInCart ? AppTheme.errorColor : AppTheme.primaryColor),
+                    icon: Icon(
+                      isInCart ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
+                      color: isInCart ? AppTheme.errorColor : AppTheme.primaryColor,
+                    ),
                   ),
                 ],
               )
