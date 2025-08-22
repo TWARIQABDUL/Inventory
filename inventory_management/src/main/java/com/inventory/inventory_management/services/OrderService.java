@@ -25,10 +25,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    // private final PaymentMethodRepository paymentMethodRepository;
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
-                        ProductRepository productRepository /*, PaymentMethodRepository paymentMethodRepository*/) {
+            ProductRepository productRepository /* , PaymentMethodRepository paymentMethodRepository */) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
@@ -88,7 +87,7 @@ public class OrderService {
             order.setStatus(updatedOrder.getStatus());
 
             if (updatedOrder.getUser() != null && updatedOrder.getUser().getUserId() != null &&
-                !order.getUser().getUserId().equals(updatedOrder.getUser().getUserId())) {
+                    !order.getUser().getUserId().equals(updatedOrder.getUser().getUserId())) {
                 Optional<User> newUser = userRepository.findById(updatedOrder.getUser().getUserId());
                 if (newUser.isEmpty()) {
                     return ResponseEntity.badRequest().body("New user not found.");

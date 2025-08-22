@@ -4,6 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.inventory.inventory_management.entities.ProductCategory;
 
-public interface CategoyRepository extends JpaRepository<ProductCategory, Long> {
+public interface CategoryRepository extends JpaRepository<ProductCategory, Long> {
 }
-

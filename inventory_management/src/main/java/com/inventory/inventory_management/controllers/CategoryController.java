@@ -12,7 +12,7 @@ import com.inventory.inventory_management.services.CategoryService;
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
-  private CategoryService categoryService;
+  private final CategoryService categoryService;
 
   public CategoryController(CategoryService categoryService){
     this.categoryService = categoryService;
@@ -22,9 +22,27 @@ public class CategoryController {
   ResponseEntity<CreateCategoryResponse> addProduct(@RequestBody ProductCategory cat){
     return categoryService.createCategory(cat);
   }
+
   @GetMapping
   List<CategoryDTO> getAllCategory(){
     return categoryService.getAllCategory();
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+      return categoryService.getCategoryById(id)
+              .map(ResponseEntity::ok)
+              .orElse(ResponseEntity.notFound().build());
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<CreateCategoryResponse> updateCategory(@PathVariable Long id, @RequestBody ProductCategory category) {
+      return categoryService.updateCategory(id, category);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+      categoryService.deleteCategory(id);
+      return ResponseEntity.noContent().build();
+  }
 }

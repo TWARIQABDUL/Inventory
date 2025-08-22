@@ -13,10 +13,4 @@ public class AllProduct {
     private final boolean taxed;
     private final BigDecimal productCost;
     private final double inStock;
-    // private final  double discount;
-
-    // "productId": 2,
-    //     "name": "Samsung",
-    //     "description": "A detailed description of the example product.",
-    //     "taxable": true,
 }
