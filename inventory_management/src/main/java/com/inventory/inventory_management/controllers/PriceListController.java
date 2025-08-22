@@ -1,5 +1,6 @@
 package com.inventory.inventory_management.controllers;
 
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.dto.PriceListDto;
 import com.inventory.inventory_management.entities.PriceList;
 import com.inventory.inventory_management.services.PriceListService;
@@ -29,10 +30,12 @@ public class PriceListController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PriceList> getPriceListById(@PathVariable Long id) {
+    public ResponseEntity<?> getPriceListById(@PathVariable Long id) {
         return priceListService.getPriceListById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(404).body(
+                    new DefaultResponse("Id not found", false)
+                ));
     }
 
     @PutMapping("/{id}")
@@ -41,7 +44,7 @@ public class PriceListController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePriceList(@PathVariable Long id) {
+    public ResponseEntity<?> deletePriceList(@PathVariable Long id) {
         return priceListService.deletePriceList(id);
     }
 }
