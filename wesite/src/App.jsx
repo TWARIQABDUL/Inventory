@@ -12,12 +12,14 @@ import Analytics from './pages/analytics';
 import LoginPage from './pages/login';
 import Register from './pages/register.jsx';
 import { UserContextProvider } from './context/userContext.jsx';
-import { InventoryProvider } from './context/InventoryContext.jsx';   // ✅ import
+import { InventoryProvider } from './context/InventoryContext.jsx';
+import {AnalyticsProvider} from "./context/datacontext.jsx";   // ✅ import
 
 function App() {
   return (
     <BrowserRouter>
       <UserContextProvider>
+        <AnalyticsProvider>
         <InventoryProvider>
           <Routes>
             <Route element={<Layout />}>
@@ -31,6 +33,7 @@ function App() {
             <Route path="/register" element={<Register />} />
           </Routes>
         </InventoryProvider>
+        </AnalyticsProvider>
       </UserContextProvider>
     </BrowserRouter>
   );

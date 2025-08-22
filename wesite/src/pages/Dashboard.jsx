@@ -6,12 +6,17 @@ import "../styles/dashboard.css";
 import { Flex, Typography } from "antd";
 import AnalyticsChart from "../components/charts/BarChart";
 import { useInventory } from "../context/InventoryContext";
+import {AnalyticsContext} from "../context/datacontext.jsx";
+import {useContext} from "react";
 
 const { Title } = Typography;
 
 export function Dashboard() {
   const { items } = useInventory();   // 🔥 consume context
+  const { apiData } = useContext(AnalyticsContext);
 
+  // const apiData = useContext(AnalyticsContext)
+  console.log("got some",apiData)
   return (
     <main className="dashboard">
       <div className="dashboard-content">
@@ -21,12 +26,12 @@ export function Dashboard() {
             <Title level={4}>Overview of Your inventory management System</Title>
           </Flex>
         </Flex>
-        <DashboardTiles items={items} />
+        <DashboardTiles />
         <Flex justify="space-between" gap={30}>
-          <Alerts />
-          <Stats items={items}/>
+          <Alerts items={apiData}/>
+          <Stats items={apiData}/>
         </Flex>
-        <ProductList items={items}/>
+        {/*<ProductList items={items}/>*/}
       </div>
     </main>
   );
