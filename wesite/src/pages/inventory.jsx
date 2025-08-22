@@ -1,19 +1,19 @@
-import { useReducer, useState, useEffect } from "react";
+import { useEffect, useReducer, useState } from "react";
 import {
   Button,
   Flex,
   Form,
   Input,
   InputNumber,
+  message,
   Modal,
   Select,
   Space,
+  Steps,
   Switch,
   Table,
   Tag,
   Typography,
-  Steps,
-  message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useInventory } from "../context/InventoryContext";
@@ -29,7 +29,6 @@ export default function Inventory() {
   const initialState = {
     isModalVisible: false,
     isCategoryModalVisible: false,
-    filters: { category: null, inStock: null },
   };
 
   const reducer = (state, action) => {
@@ -38,8 +37,6 @@ export default function Inventory() {
         return { ...state, isModalVisible: action.payload };
       case "TOGGLE_CATEGORY_MODAL":
         return { ...state, isCategoryModalVisible: action.payload };
-      case "SET_FILTERS":
-        return { ...state, filters: action.payload };
       default:
         return state;
     }
@@ -47,13 +44,14 @@ export default function Inventory() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const [form] = Form.useForm();
+  const [categoryForm] = Form.useForm();
   const [current, setCurrent] = useState(0);
   const [productId, setProductId] = useState(null);
-
-  // ✅ Categories state
   const [categories, setCategories] = useState([]);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editForm] = Form.useForm();
+  const [editingProduct, setEditingProduct] = useState(null);
 
-  // ✅ Fetch categories on mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -66,7 +64,31 @@ export default function Inventory() {
       }
     };
     fetchCategories();
-  }, []);
+  }, [baseUrl]);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${baseUrl}/products`);
+      const data = await res.json();
+      console.log(data);
+      const mapped = data.map((p) => ({
+        id: p.productId,
+        name: p.productName,
+        category: { name: p.categoryName },
+        quantity: p.inStock,
+        price: p.productCost,
+        inStock: p.inStock > 0,
+      }));
+      setItems(mapped);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      message.error("Could not load products");
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [baseUrl]);
 
   const next = () => setCurrent(current + 1);
   const prev = () => setCurrent(current - 1);
@@ -74,8 +96,6 @@ export default function Inventory() {
   const handleSubmit = async (values) => {
     try {
       let res;
-
-      // Step 1: Add Product
       if (current === 0) {
         res = await fetch(`${baseUrl}/products`, {
           method: "POST",
@@ -88,15 +108,15 @@ export default function Inventory() {
           }),
         });
         const data = await res.json();
-        if (data.status) {
-          message.success(data.message);
+        if (res.ok) {
+          message.success(data.message || "Product created successfully!");
           setProductId(data.id);
           next();
+        } else {
+          message.error(data.message || "Failed to create product");
         }
-      }
-
-      // Step 2: Add Price
-      if (current === 1) {
+      } else if (current === 1) {
+        // Step 2: Add price
         res = await fetch(`${baseUrl}/price-lists`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -106,12 +126,14 @@ export default function Inventory() {
           }),
         });
         const data = await res.json();
-        message.success(data.message);
-        next();
-      }
-
-      // Step 3: Add Stock
-      if (current === 2) {
+        if (res.ok) {
+          message.success(data.message || "Price added successfully!");
+          next();
+        } else {
+          message.error(data.message || "Failed to add price");
+        }
+      } else if (current === 2) {
+        // Step 3: Add stock
         res = await fetch(`${baseUrl}/stock`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -121,10 +143,17 @@ export default function Inventory() {
           }),
         });
         const data = await res.json();
-        message.success(`${data.quantity} units added for ${data.productName}`);
-        dispatch({ type: "TOGGLE_MODAL", payload: false });
-        form.resetFields();
-        setCurrent(0);
+        if (res.ok) {
+          message.success(
+            `${data.quantity} units added for ${data.productName}`
+          );
+          await fetchProducts();
+          dispatch({ type: "TOGGLE_MODAL", payload: false });
+          form.resetFields();
+          setCurrent(0);
+        } else {
+          message.error(data.message || "Failed to add stock");
+        }
       }
     } catch (error) {
       console.error(error);
@@ -132,7 +161,55 @@ export default function Inventory() {
     }
   };
 
-  // ✅ Steps definition (dynamic categories in Select)
+  const handleDelete = async (id) => {
+    console.log(id);
+    try {
+      const res = await fetch(`${baseUrl}/products/${id}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
+      console.log(data);
+      if (res.ok) {
+        message.success(data.message || "Product deleted successfully");
+        await fetchProducts();
+      } else {
+        message.error(data.message || "Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Delete failed:", error);
+      message.error("Something went wrong while deleting");
+    }
+  };
+
+  // Handle Edit Submit
+  const handleEditSubmit = async (values) => {
+    try {
+      const res = await fetch(`${baseUrl}/products/${editingProduct.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          description: values.description,
+          category: { categoryId: values.categoryId },
+          taxable: values.taxable,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        message.success(data.message || "Product updated successfully");
+        setIsEditModalVisible(false);
+        editForm.resetFields();
+        await fetchProducts();
+      } else {
+        message.error(data.message || "Failed to update product");
+      }
+    } catch (error) {
+      console.error("Update failed:", error);
+      message.error("Something went wrong while updating");
+    }
+  };
+
   const steps = [
     {
       title: "Add Product",
@@ -185,11 +262,7 @@ export default function Inventory() {
       title: "Add Price",
       content: (
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            name="price"
-            label="Price"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="price" label="Price" rules={[{ required: true }]}>
             <InputNumber min={0} step={0.01} style={{ width: "100%" }} />
           </Form.Item>
 
@@ -224,8 +297,6 @@ export default function Inventory() {
       ),
     },
   ];
-
-  // ✅ Table now shows category name instead of just ID
   const columns = [
     {
       title: "ID",
@@ -242,9 +313,7 @@ export default function Inventory() {
       title: "Category",
       dataIndex: "category",
       key: "category",
-      render: (cat) => (
-        <Tag color="purple">{cat?.name || "No Category"}</Tag>
-      ),
+      render: (cat) => <Tag color="purple">{cat?.name || "No Category"}</Tag>,
     },
     {
       title: "Quantity",
@@ -264,27 +333,51 @@ export default function Inventory() {
       render: (inStock) =>
         inStock ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>,
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Space>
+          <Button
+            type="link"
+            onClick={() => {
+              setEditingProduct(record);
+              editForm.setFieldsValue({
+                name: record.name,
+                description: record.description,
+                categoryId: record.category?.id,
+                taxable: record.taxable,
+              });
+              setIsEditModalVisible(true);
+            }}
+          >
+            Edit
+          </Button>
+          <Button type="link" danger onClick={() => handleDelete(record.id)}>
+            Delete
+          </Button>
+        </Space>
+      ),
+    },
   ];
 
   return (
     <div style={{ padding: 20, background: "#f5f7fa", minHeight: "100vh" }}>
-      <Space direction={"vertical"} size={20} style={{ width: "100%" }}>
-        <Flex justify={"space-between"}>
+      <Space direction="vertical" size={20} style={{ width: "100%" }}>
+        <Flex justify="space-between">
           <Title level={2}>Inventory Management</Title>
           <div style={{ display: "flex", gap: 10 }}>
             <Button
               type="primary"
-              size={"large"}
+              size="large"
               icon={<PlusOutlined />}
-              onClick={() =>
-                dispatch({ type: "TOGGLE_MODAL", payload: true })
-              }
+              onClick={() => dispatch({ type: "TOGGLE_MODAL", payload: true })}
             >
               Add Inventory
             </Button>
             <Button
               type="default"
-              size={"large"}
+              size="large"
               icon={<PlusOutlined />}
               onClick={() =>
                 dispatch({ type: "TOGGLE_CATEGORY_MODAL", payload: true })
@@ -304,20 +397,118 @@ export default function Inventory() {
         />
       </Space>
 
-      {/* Add Inventory Modal with Steps */}
+      <Modal
+        title="Add Category"
+        open={state.isCategoryModalVisible}
+        onCancel={() =>
+          dispatch({ type: "TOGGLE_CATEGORY_MODAL", payload: false })
+        }
+        footer={null}
+      >
+        <Form
+          form={categoryForm}
+          layout="vertical"
+          onFinish={async (values) => {
+            try {
+              const res = await fetch(`${baseUrl}/category`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: values.categoryName }),
+              });
+
+              const data = await res.json();
+
+              if (res.ok) {
+                message.success("Category added successfully!");
+                setCategories((prev) => [...prev, data]);
+                dispatch({ type: "TOGGLE_CATEGORY_MODAL", payload: false });
+                categoryForm.resetFields();
+              } else {
+                message.error(data.message || "Failed to add category");
+              }
+            } catch (err) {
+              console.error("Error adding category:", err);
+              message.error("Something went wrong while adding category");
+            }
+          }}
+        >
+          <Form.Item
+            label="Category Name"
+            name="categoryName"
+            rules={[{ required: true, message: "Please enter category name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Add Category
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <Modal
         title="Add Inventory"
         open={state.isModalVisible}
+        onCancel={() => {
+          dispatch({ type: "TOGGLE_MODAL", payload: false });
+          setCurrent(0);
+          form.resetFields();
+        }}
         footer={null}
-        onCancel={() => dispatch({ type: "TOGGLE_MODAL", payload: false })}
-        width={600}
       >
         <Steps current={current}>
           {steps.map((item) => (
             <Step key={item.title} title={item.title} />
           ))}
         </Steps>
-        <div style={{ marginTop: 30 }}>{steps[current].content}</div>
+        <div style={{ marginTop: 24 }}>{steps[current].content}</div>
+      </Modal>
+      <Modal
+        title="Edit Product"
+        open={isEditModalVisible}
+        onCancel={() => setIsEditModalVisible(false)}
+        footer={null}
+      >
+        <Form form={editForm} layout="vertical" onFinish={handleEditSubmit}>
+          <Form.Item
+            name="name"
+            label="Product Name"
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true }]}
+          >
+            <Input.TextArea rows={3} />
+          </Form.Item>
+
+          <Form.Item name="taxable" label="Taxable" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+
+          <Form.Item
+            name="categoryId"
+            label="Category"
+            rules={[{ required: true }]}
+          >
+            <Select placeholder="Select Category">
+              {categories.map((cat) => (
+                <Option key={cat.categoryId} value={cat.categoryId}>
+                  {cat.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit" block>
+            Update Product
+          </Button>
+        </Form>
       </Modal>
     </div>
   );
