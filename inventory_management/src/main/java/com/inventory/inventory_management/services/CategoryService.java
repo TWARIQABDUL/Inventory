@@ -41,6 +41,7 @@ public class CategoryService {
     }
 
     public Optional<CategoryDTO> getCategoryById(Long id) {
+        
         return categoryRepository.findById(id).map(this::convertToDto);
     }
 
@@ -50,7 +51,7 @@ public class CategoryService {
             ProductCategory category = existingCategory.get();
             category.setName(updatedCategory.getName());
             categoryRepository.save(category);
-            return ResponseEntity.ok(new CreateCategoryResponse("category updated", false));
+            return ResponseEntity.ok(new CreateCategoryResponse("category updated", true));
         }
         return ResponseEntity.notFound().build();
     }

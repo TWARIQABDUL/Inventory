@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.inventory.inventory_management.dto.CategoryDTO;
 import com.inventory.inventory_management.dto.CreateCategoryResponse;
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.ProductCategory;
 import com.inventory.inventory_management.services.CategoryService;
 
@@ -29,10 +30,13 @@ public class CategoryController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+  public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
       return categoryService.getCategoryById(id)
-              .map(ResponseEntity::ok)
-              .orElse(ResponseEntity.notFound().build());
+      .<ResponseEntity<?>>map(ResponseEntity::ok)
+              // .map(ResponseEntity::ok)
+              .orElse(ResponseEntity.status(404).body(
+                new DefaultResponse("Category not Found",false)
+              ));
   }
 
   @PutMapping("/{id}")
@@ -41,8 +45,8 @@ public class CategoryController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-      categoryService.deleteCategory(id);
-      return ResponseEntity.noContent().build();
+  public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+      return categoryService.deleteCategory(id);
+      
   }
 }

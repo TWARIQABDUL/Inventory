@@ -42,17 +42,19 @@ public class ProductService {
     .collect(Collectors.toList());
   }
 
-  public Optional<Product> getProductById(Long productId) {
-    return productRepository.findById(productId);
+  public Optional<AllProduct> getProductById(Long productId) {
+    return productRepository.findById(productId)
+    .map(this::convertToAllProduct);
   }
 
-  public Product updateProduct(Long productId, Product productDetails) {
+  public AllProduct updateProduct(Long productId, Product productDetails) {
     Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
     product.setName(productDetails.getName());
     product.setDescription(productDetails.getDescription());
     product.setTaxable(productDetails.getTaxable());
     product.setCategory(productDetails.getCategory());
-    return productRepository.save(product);
+    Product updatedProduct = productRepository.save(product);
+    return convertToAllProduct(updatedProduct);
   }
 
   public ResponseEntity<?> deleteProduct(Long productId) {
