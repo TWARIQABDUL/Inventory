@@ -1,5 +1,6 @@
 package com.inventory.inventory_management.services;
 
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.dto.TransactionResponse;
 import com.inventory.inventory_management.entities.Transaction;
 import com.inventory.inventory_management.repository.TransactionRepository;
@@ -42,7 +43,18 @@ public class TransactionService {
         return transactionRepository.findById(id);
     }
 
-    public void deleteTransaction(Long id) {
+    public ResponseEntity<?> deleteTransaction(Long id) {
+
+        try {
         transactionRepository.deleteById(id);
+        return ResponseEntity.ok(
+            new DefaultResponse("Transaction deleted", true)
+        );
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+            new DefaultResponse("Transaction Not deleted", false)
+        );
+        }
     }
 }

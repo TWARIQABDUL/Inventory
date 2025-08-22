@@ -1,5 +1,6 @@
 package com.inventory.inventory_management.services;
 
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.Order;
 import com.inventory.inventory_management.entities.OrderItem;
 import com.inventory.inventory_management.entities.Product;
@@ -90,13 +91,17 @@ public class OrderService {
                     !order.getUser().getUserId().equals(updatedOrder.getUser().getUserId())) {
                 Optional<User> newUser = userRepository.findById(updatedOrder.getUser().getUserId());
                 if (newUser.isEmpty()) {
-                    return ResponseEntity.badRequest().body("New user not found.");
+                    return ResponseEntity.badRequest().body(
+                            new DefaultResponse("New User Not Found", false));
                 }
                 order.setUser(newUser.get());
             }
 
             Order savedOrder = orderRepository.save(order);
-            return ResponseEntity.ok(savedOrder);
+            return ResponseEntity.ok(
+                    new DefaultResponse("Record Updated" +savedOrder.getOrderCode(), false)
+
+            );
         }
         return ResponseEntity.notFound().build();
     }

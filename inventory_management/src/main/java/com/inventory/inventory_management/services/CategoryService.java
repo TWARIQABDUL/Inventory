@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventory.inventory_management.dto.CategoryDTO;
 import com.inventory.inventory_management.dto.CreateCategoryResponse;
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.ProductCategory;
 import com.inventory.inventory_management.repository.CategoryRepository;
 
@@ -54,8 +55,19 @@ public class CategoryService {
         return ResponseEntity.notFound().build();
     }
 
-    public void deleteCategory(Long id) {
+    public ResponseEntity<?> deleteCategory(Long id) {
+        try {
         categoryRepository.deleteById(id);
+            return
+            ResponseEntity.ok(
+                new DefaultResponse("Category Deleted Succesfully",true)
+            );
+        } catch (Exception e) {
+            return
+            ResponseEntity.badRequest().body(
+                new DefaultResponse("Category Not Successfull",false)
+            );
+        }
     }
 
     private CategoryDTO convertToDto(ProductCategory category) {

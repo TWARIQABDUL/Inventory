@@ -1,5 +1,6 @@
 package com.inventory.inventory_management.services;
 
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.dto.PriceListDto;
 import com.inventory.inventory_management.dto.PriceResponseDto;
 import com.inventory.inventory_management.entities.PriceList;
@@ -33,10 +34,15 @@ public class PriceListService {
                     new PriceResponseDto(savedPriceList.getProduct().getName(),savedPriceList.getProduct().getProductId(),savedPriceList.getPrice(),"Product Added Success")
                 );
             } else {
-                return ResponseEntity.badRequest().body("Product not found.");
+                return ResponseEntity.badRequest().body(
+                    new DefaultResponse("Product Not Found",false)
+
+                );
             }
         }
-        return ResponseEntity.badRequest().body("Product ID must be provided.");
+        return ResponseEntity.badRequest().body(
+            new DefaultResponse("Product ID must be provided",false)
+        );
     }
 
     public List<PriceListDto> getAllPriceLists() {

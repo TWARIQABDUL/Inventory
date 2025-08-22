@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventory.inventory_management.dto.AllProduct;
 import com.inventory.inventory_management.dto.ProductAddeResponse;
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.repository.ProductRepository;
 
@@ -54,8 +55,18 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public void deleteProduct(Long productId) {
+  public ResponseEntity<?> deleteProduct(Long productId) {
+    try {
     productRepository.deleteById(productId);
+    return ResponseEntity.ok(
+      new DefaultResponse("Product Deleted",true)
+    );
+      
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(
+      new DefaultResponse("Product not Deleted",false)
+    );
+    }
   }
 
  private AllProduct convertToAllProduct(Product product) {
