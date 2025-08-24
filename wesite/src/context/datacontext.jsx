@@ -101,6 +101,7 @@ export const AnalyticsProvider = ({ children }) => {
         dynData,
         apiData,
         filtered,
+        setApiData,
         sortData,
         refresh,
       }}
