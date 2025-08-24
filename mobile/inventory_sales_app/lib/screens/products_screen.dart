@@ -59,11 +59,7 @@ class ProductsScreen extends StatelessWidget {
 
         return Column(
           children: [
-            CategoryFilter(
-              categories: ['All', ...products.categories.map((e) => e.name)],
-              selectedCategory: products.selectedCategory.value,
-              onCategorySelected: products.setSelectedCategory,
-            ),
+            const CategoryFilter(),
             Expanded(
               child: GridView.builder(
                 padding: const EdgeInsets.all(16),
