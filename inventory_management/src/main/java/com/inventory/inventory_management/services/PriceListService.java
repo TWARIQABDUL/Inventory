@@ -55,29 +55,36 @@ public class PriceListService {
     public Optional<PriceListDto> getPriceListById(Long id) {
         return priceListRepository.findById(id)
                 .map(this::convertToPriceListDto);
-                // .collect(Collectors.toList());
+        // .collect(Collectors.toList());
     }
 
-    public ResponseEntity<Object> updatePriceList(Long id, PriceList updatedPriceList) {
+    public ResponseEntity<?> updatePriceList(Long id, PriceList updatedPriceList) {
         Optional<PriceList> existingPriceList = priceListRepository.findById(id);
-        if (existingPriceList.isPresent()) {
-            PriceList priceList = existingPriceList.get();
-            priceList.setPrice(updatedPriceList.getPrice());
-            if (updatedPriceList.getProduct() != null && updatedPriceList.getProduct().getProductId() != null) {
-                Optional<Product> existingProduct = productRepository
-                        .findById(updatedPriceList.getProduct().getProductId());
-                if (existingProduct.isPresent()) {
-                    priceList.setProduct(existingProduct.get());
-                } else {
-                    return ResponseEntity.badRequest().body("Product not found for update.");
-                }
-            }
-            PriceList savedPriceList = priceListRepository.save(priceList);
-            return ResponseEntity.ok(savedPriceList);
+        if (!existingPriceList.isPresent()) {
+            return ResponseEntity.status(404).body(
+                    new DefaultResponse("Price Id not Found ", false));
         }
-        return ResponseEntity.badRequest().body(
-            new DefaultResponse("Some thing went wron", false)
-        );
+        PriceList priceList = existingPriceList.get();
+        priceList.setPrice(updatedPriceList.getPrice());
+        if (updatedPriceList.getProduct() != null && updatedPriceList.getProduct().getProductId() != null) {
+            Optional<Product> existingProduct = productRepository
+                    .findById(updatedPriceList.getProduct().getProductId());
+            if (existingProduct.isPresent()) {
+                priceList.setProduct(existingProduct.get());
+                priceListRepository.save(priceList);
+                return ResponseEntity.status(200).body(
+                        new DefaultResponse("Price List Has Updated", true));
+            } else {
+                return ResponseEntity.status(400).body(
+                        new DefaultResponse("Product NotFound", false));
+            }
+        } else {
+            return ResponseEntity.status(400).body(
+                    new DefaultResponse("Product Missing", false));
+        }
+        // PriceList savedPriceList = priceListRepository.save(priceList);
+        // return ResponseEntity.status(200).body(
+        // new DefaultResponse("Price List Has Updated", true));
     }
 
     public ResponseEntity<?> deletePriceList(Long id) {
@@ -85,13 +92,12 @@ public class PriceListService {
             priceListRepository.deleteById(id);
 
             return ResponseEntity.status(200).body(
-            new DefaultResponse("Price List deleted", true)
-                
+                    new DefaultResponse("Price List deleted", true)
+
             );
         }
         return ResponseEntity.status(404).body(
-            new DefaultResponse("Id Not Found", false)
-        );
+                new DefaultResponse("Id Not Found", false));
     }
 
     private PriceListDto convertToPriceListDto(PriceList prices) {

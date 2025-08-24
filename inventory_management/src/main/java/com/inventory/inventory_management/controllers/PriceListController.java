@@ -39,7 +39,7 @@ public class PriceListController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updatePriceList(@PathVariable Long id, @RequestBody PriceList priceList) {
+    public ResponseEntity<?> updatePriceList(@PathVariable Long id, @RequestBody PriceList priceList) {
         return priceListService.updatePriceList(id, priceList);
     }
 

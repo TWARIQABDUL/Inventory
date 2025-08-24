@@ -31,7 +31,7 @@ public class ProductService {
       );
     } catch (Exception e) {
       return ResponseEntity.ok(
-        new ProductAddeResponse("Something went wrong ",false,product.getProductId())
+        new ProductAddeResponse("Something went wrong "+e,false,product.getProductId())
       );
     }
   }
@@ -74,6 +74,8 @@ public class ProductService {
  private AllProduct convertToAllProduct(Product product) {
     int quantity = (product.getStock() != null) ? product.getStock().getQuantity() : 0;
     BigDecimal price = (product.getPriceList() != null) ? product.getPriceList().getPrice() : BigDecimal.ZERO;
+    Long priceId = (product.getPriceList() != null) ? product.getPriceList().getPriceListId() :0;
+
     String categoryName = (product.getCategory() != null) ? product.getCategory().getName() : "Uncategorized";
 
     return new AllProduct(
@@ -83,7 +85,9 @@ public class ProductService {
         categoryName,
         product.getTaxable(),
         price,
-        quantity
+        quantity,
+        priceId
+
     );
 }
 

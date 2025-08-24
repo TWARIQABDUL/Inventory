@@ -13,4 +13,5 @@ public class AllProduct {
     private final boolean taxed;
     private final BigDecimal productCost;
     private final double inStock;
+    private final Long priceId;
 }
