@@ -56,7 +56,7 @@ class CartItemCard extends StatelessWidget {
                 IconButton(
                   onPressed: cartItem.quantity > 1
                       ? () => cart.updateQuantity(
-                          cartItem.product.productId, cartItem.quantity - 1)
+                          cartItem.product.productId, cartItem.inStoc - 1)
                       : null,
                   icon: const Icon(Icons.remove),
                 ),
