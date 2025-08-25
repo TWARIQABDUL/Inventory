@@ -13,7 +13,7 @@ import LoginPage from './pages/login';
 import Register from './pages/register.jsx';
 import { UserContextProvider } from './context/userContext.jsx';
 import { InventoryProvider } from './context/InventoryContext.jsx';
-import {AnalyticsProvider} from "./context/datacontext.jsx";   // ✅ import
+import {AnalyticsProvider} from "./context/datacontext.jsx";
 
 function App() {
   return (
