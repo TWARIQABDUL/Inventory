@@ -17,16 +17,40 @@ class Product {
     required this.priceList,
   });
 
+  // Updated to match AllProduct DTO from backend
   factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      productId: json['productId'] ?? 0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      taxable: json['taxable'] ?? false,
-      category: ProductCategory.fromJson(json['category'] ?? {}),
-      stock: Stock.fromJson(json['stock'] ?? {}),
-      priceList: PriceList.fromJson(json['priceList'] ?? {}),
-    );
+    try {
+      return Product(
+        productId: json['productId']?.toInt() ?? 0,
+        name: json['productName'] ?? json['name'] ?? '',
+        description: json['description'] ?? '',
+        taxable: json['taxed'] ?? json['taxable'] ?? false,
+        category: ProductCategory.fromJson({
+          'categoryId': json['categoryId'] ?? 0,
+          'name': json['categoryName'] ?? json['category']?['name'] ?? '',
+          'description': json['category']?['description'] ?? '',
+        }),
+        stock: Stock.fromJson({
+          'stockId': json['stockId'] ?? 0,
+          'quantity': json['inStock']?.toInt() ?? json['stock']?['quantity']?.toInt() ?? 0,
+        }),
+        priceList: PriceList.fromJson({
+          'priceListId': json['priceListId'] ?? 0,
+          'price': (json['productCost'] ?? json['priceList']?['price'] ?? 0.0).toDouble(),
+        }),
+      );
+    } catch (e) {
+      // Return a default product if parsing fails
+      return Product(
+        productId: 0,
+        name: 'Unknown Product',
+        description: 'Product information unavailable',
+        taxable: false,
+        category: ProductCategory(categoryId: 0, name: 'Unknown', description: ''),
+        stock: Stock(stockId: 0, quantity: 0),
+        priceList: PriceList(priceListId: 0, price: 0.0),
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -54,11 +78,19 @@ class ProductCategory {
   });
 
   factory ProductCategory.fromJson(Map<String, dynamic> json) {
-    return ProductCategory(
-      categoryId: json['categoryId'] ?? 0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-    );
+    try {
+      return ProductCategory(
+        categoryId: json['categoryId']?.toInt() ?? 0,
+        name: json['name'] ?? '',
+        description: json['description'] ?? '',
+      );
+    } catch (e) {
+      return ProductCategory(
+        categoryId: 0,
+        name: 'Unknown Category',
+        description: '',
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -80,10 +112,14 @@ class Stock {
   });
 
   factory Stock.fromJson(Map<String, dynamic> json) {
-    return Stock(
-      stockId: json['stockId'] ?? 0,
-      quantity: json['quantity'] ?? 0,
-    );
+    try {
+      return Stock(
+        stockId: json['stockId']?.toInt() ?? 0,
+        quantity: json['quantity']?.toInt() ?? 0,
+      );
+    } catch (e) {
+      return Stock(stockId: 0, quantity: 0);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -104,10 +140,14 @@ class PriceList {
   });
 
   factory PriceList.fromJson(Map<String, dynamic> json) {
-    return PriceList(
-      priceListId: json['priceListId'] ?? 0,
-      price: (json['price'] ?? 0.0).toDouble(),
-    );
+    try {
+      return PriceList(
+        priceListId: json['priceListId']?.toInt() ?? 0,
+        price: (json['price'] ?? 0.0).toDouble(),
+      );
+    } catch (e) {
+      return PriceList(priceListId: 0, price: 0.0);
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:inventory_sales_app/services/api_service.dart';
 
 class AuthController extends GetxController {
   final _storage = GetStorage();
@@ -8,6 +9,7 @@ class AuthController extends GetxController {
   final userName = ''.obs;
   final userEmail = ''.obs;
   final isLoading = false.obs;
+  final errorMessage = ''.obs;
 
   @override
   void onInit() {
@@ -25,34 +27,65 @@ class AuthController extends GetxController {
 
   Future<bool> login(String email, String password) async {
     isLoading.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (email == 'demo@example.com' && password == 'password') {
-      isAuthenticated.value = true;
-      userName.value = 'Demo User';
-      userEmail.value = email;
-      _persist();
+    errorMessage.value = '';
+    
+    try {
+      final response = await ApiService.login(email, password);
+      
+      if (response['status'] == true) {
+        isAuthenticated.value = true;
+        userName.value = response['name'] ?? '';
+        userEmail.value = response['email'] ?? '';
+        _persist();
+        isLoading.value = false;
+        return true;
+      } else {
+        errorMessage.value = response['message'] ?? 'Login failed';
+        isLoading.value = false;
+        return false;
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
       isLoading.value = false;
-      return true;
+      return false;
     }
-    isLoading.value = false;
-    return false;
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<bool> register(String firstName, String lastName, String email, String password) async {
     isLoading.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    isAuthenticated.value = true;
-    userName.value = name;
-    userEmail.value = email;
-    _persist();
-    isLoading.value = false;
-    return true;
+    errorMessage.value = '';
+    
+    try {
+      final response = await ApiService.register(firstName, lastName, email, password);
+      
+      if (response['status'] == true || response['message']?.contains('success') == true) {
+        isAuthenticated.value = true;
+        userName.value = '$firstName $lastName';
+        userEmail.value = email;
+        _persist();
+        isLoading.value = false;
+        return true;
+      } else {
+        errorMessage.value = response['message'] ?? 'Registration failed';
+        isLoading.value = false;
+        return false;
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+      isLoading.value = false;
+      return false;
+    }
   }
 
   void logout() {
     isAuthenticated.value = false;
     userName.value = '';
     userEmail.value = '';
+    errorMessage.value = '';
     _storage.erase();
+  }
+
+  void clearError() {
+    errorMessage.value = '';
   }
 }
