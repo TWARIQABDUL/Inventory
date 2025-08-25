@@ -27,7 +27,8 @@ class AuthController extends GetxController {
   }
 
   Future<bool> login(String email, String password) async {
-    const String link = "http://localhost:8080/api/auth/login";
+    print("Loging In");
+    const String link = "http://192.168.254.115:1010/api/auth/login";
     isLoading.value = true;
     try {
       final response = await http.post(
@@ -44,13 +45,14 @@ class AuthController extends GetxController {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         isAuthenticated.value = true;
-        userName.value = data['name']; 
+        userName.value = data['name'];
         userEmail.value = data['email'];
         return true;
       } else {
         return false;
       }
     } catch (e) {
+      print("Error Happen $e");
       return false;
     } finally {
       isLoading.value = false;
@@ -59,6 +61,7 @@ class AuthController extends GetxController {
 
   Future<bool> register(String name, String email, String password) async {
     const String link = "http://localhost:8080/api/auth/register";
+    print("Loging in");
     isLoading.value = true;
     try {
       final response = await http.post(
@@ -74,7 +77,6 @@ class AuthController extends GetxController {
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        // Assuming registration also logs the user in
         final data = jsonDecode(response.body);
         isAuthenticated.value = true;
         userName.value = data['name'];

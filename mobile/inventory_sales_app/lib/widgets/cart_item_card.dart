@@ -27,18 +27,23 @@ class CartItemCard extends StatelessWidget {
                 color: AppTheme.backgroundColor,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.inventory_2, color: AppTheme.primaryColor),
+              child:
+                  const Icon(Icons.inventory_2, color: AppTheme.primaryColor),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(cartItem.product.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(cartItem.product.productName,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
-                  Text(cartItem.product.category.name, style: AppTheme.body2),
+                  Text(cartItem.product.categoryName, style: AppTheme.body2),
                   const SizedBox(height: 8),
-                  Text(currency.format(cartItem.product.priceList.price), style: const TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w700)),
+                  Text(currency.format(cartItem.product.productCost),
+                      style: const TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w700)),
                 ],
               ),
             ),
@@ -46,14 +51,17 @@ class CartItemCard extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: cartItem.quantity > 1
-                      ? () => cart.updateQuantity(cartItem.product.productId, cartItem.quantity - 1)
+                      ? () => cart.updateQuantity(
+                          cartItem.product.productId, cartItem.quantity - 1)
                       : null,
                   icon: const Icon(Icons.remove),
                 ),
-                Text('${cartItem.quantity}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text('${cartItem.quantity}',
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 IconButton(
-                  onPressed: cartItem.quantity < cartItem.product.stock.quantity
-                      ? () => cart.updateQuantity(cartItem.product.productId, cartItem.quantity + 1)
+                  onPressed: cartItem.quantity < cartItem.product.inStock
+                      ? () => cart.updateQuantity(
+                          cartItem.product.productId, cartItem.quantity + 1)
                       : null,
                   icon: const Icon(Icons.add),
                 ),
@@ -61,7 +69,8 @@ class CartItemCard extends StatelessWidget {
             ),
             IconButton(
               onPressed: () => cart.removeItem(cartItem.product.productId),
-              icon: const Icon(Icons.delete_outline, color: AppTheme.errorColor),
+              icon:
+                  const Icon(Icons.delete_outline, color: AppTheme.errorColor),
             ),
           ],
         ),

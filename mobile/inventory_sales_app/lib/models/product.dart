@@ -1,119 +1,47 @@
 class Product {
   final int productId;
-  final String name;
+  final String productName;
   final String description;
-  final bool taxable;
-  final ProductCategory category;
-  final Stock stock;
-  final PriceList priceList;
+  final String categoryName;
+  final bool taxed;
+  final double productCost;
+  final int inStock;
+  final int priceId;
 
   Product({
     required this.productId,
-    required this.name,
+    required this.productName,
     required this.description,
-    required this.taxable,
-    required this.category,
-    required this.stock,
-    required this.priceList,
+    required this.categoryName,
+    required this.taxed,
+    required this.productCost,
+    required this.inStock,
+    required this.priceId,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      productId: json['productId'] ?? 0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      taxable: json['taxable'] ?? false,
-      category: ProductCategory.fromJson(json['category'] ?? {}),
-      stock: Stock.fromJson(json['stock'] ?? {}),
-      priceList: PriceList.fromJson(json['priceList'] ?? {}),
+      productId: (json['productId'] as num? ?? 0).toInt(),
+      productName: json['productName'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      categoryName: json['categoryName'] as String? ?? '',
+      taxed: json['taxed'] as bool? ?? false,
+      productCost: (json['productCost'] as num? ?? 0.0).toDouble(),
+      inStock: (json['inStock'] as num? ?? 0).toInt(),
+      priceId: (json['priceId'] as num? ?? 0).toInt(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'productId': productId,
-      'name': name,
+      'productName': productName,
       'description': description,
-      'taxable': taxable,
-      'category': category.toJson(),
-      'stock': stock.toJson(),
-      'priceList': priceList.toJson(),
-    };
-  }
-}
-
-class ProductCategory {
-  final int categoryId;
-  final String name;
-  final String description;
-
-  ProductCategory({
-    required this.categoryId,
-    required this.name,
-    required this.description,
-  });
-
-  factory ProductCategory.fromJson(Map<String, dynamic> json) {
-    return ProductCategory(
-      categoryId: json['categoryId'] ?? 0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'categoryId': categoryId,
-      'name': name,
-      'description': description,
-    };
-  }
-}
-
-class Stock {
-  final int stockId;
-  final int quantity;
-
-  Stock({
-    required this.stockId,
-    required this.quantity,
-  });
-
-  factory Stock.fromJson(Map<String, dynamic> json) {
-    return Stock(
-      stockId: json['stockId'] ?? 0,
-      quantity: json['quantity'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'stockId': stockId,
-      'quantity': quantity,
-    };
-  }
-}
-
-class PriceList {
-  final int priceListId;
-  final double price;
-
-  PriceList({
-    required this.priceListId,
-    required this.price,
-  });
-
-  factory PriceList.fromJson(Map<String, dynamic> json) {
-    return PriceList(
-      priceListId: json['priceListId'] ?? 0,
-      price: (json['price'] ?? 0.0).toDouble(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'priceListId': priceListId,
-      'price': price,
+      'categoryName': categoryName,
+      'taxed': taxed,
+      'productCost': productCost,
+      'inStock': inStock,
+      'priceId': priceId,
     };
   }
 }

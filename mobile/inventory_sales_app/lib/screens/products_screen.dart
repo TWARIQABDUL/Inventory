@@ -23,16 +23,25 @@ class ProductsScreen extends StatelessWidget {
         title: const Text('Products'),
         actions: [
           Obx(() => Stack(children: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart)),
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.shopping_cart)),
                 if (cart.itemCount > 0)
                   Positioned(
                     right: 8,
                     top: 8,
                     child: Container(
                       padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(color: AppTheme.errorColor, borderRadius: BorderRadius.circular(10)),
-                      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                      child: Text('${cart.itemCount}', style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      decoration: BoxDecoration(
+                          color: AppTheme.errorColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      constraints:
+                          const BoxConstraints(minWidth: 16, minHeight: 16),
+                      child: Text('${cart.itemCount}',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center),
                     ),
                   )
               ])),
@@ -47,11 +56,14 @@ class ProductsScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.error_outline, size: 48, color: AppTheme.errorColor),
+                const Icon(Icons.error_outline,
+                    size: 48, color: AppTheme.errorColor),
                 const SizedBox(height: 8),
                 Text(products.error.value),
                 const SizedBox(height: 12),
-                ElevatedButton(onPressed: () => products.loadProducts(), child: const Text('Retry')),
+                ElevatedButton(
+                    onPressed: () => products.loadProducts(),
+                    child: const Text('Retry')),
               ],
             ),
           );
@@ -60,7 +72,7 @@ class ProductsScreen extends StatelessWidget {
         return Column(
           children: [
             CategoryFilter(
-              categories: ['All', ...products.categories.map((e) => e.name)],
+              categories: products.categories,
               selectedCategory: products.selectedCategory.value,
               onCategorySelected: products.setSelectedCategory,
             ),
@@ -74,7 +86,8 @@ class ProductsScreen extends StatelessWidget {
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
-                itemBuilder: (_, i) => ProductCard(product: products.filteredProducts[i]),
+                itemBuilder: (_, i) =>
+                    ProductCard(product: products.filteredProducts[i]),
               ),
             )
           ],

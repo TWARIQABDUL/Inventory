@@ -40,7 +40,7 @@ class ProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                product.name,
+                product.productName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontWeight: FontWeight.w600),
@@ -53,17 +53,17 @@ class ProductCard extends StatelessWidget {
                 style: AppTheme.body2,
               ),
               const SizedBox(height: 4),
-              Text(product.category.name, style: AppTheme.caption),
+              Text(product.categoryName, style: AppTheme.caption),
               const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    currency.format(product.priceList.price),
+                    currency.format(product.productCost),
                     style: const TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w700),
                   ),
                   IconButton(
-                    onPressed: product.stock.quantity > 0
+                    onPressed: product.inStock > 0
                         ? () {
                             if (cart.isInCart(product.productId)) {
                               cart.removeItem(product.productId);
