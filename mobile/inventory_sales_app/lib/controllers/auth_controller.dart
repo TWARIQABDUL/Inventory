@@ -41,12 +41,15 @@ class AuthController extends GetxController {
           'password': password,
         }),
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print("data $data");
         isAuthenticated.value = true;
         userName.value = data['name'];
         userEmail.value = data['email'];
+        // print(data);
+        _persist();
+
         return true;
       } else {
         return false;
@@ -59,8 +62,8 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<bool> register(String name, String email, String password) async {
-    const String link = "http://localhost:8080/api/auth/register";
+  Future<bool> register(String fname,String lname,String username ,String email, String password) async {
+    const String link = "http://192.168.254.115:1010/api/auth/register";
     print("Loging in");
     isLoading.value = true;
     try {
@@ -70,12 +73,14 @@ class AuthController extends GetxController {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'name': name,
+          "username":username,
           'email': email,
-          'password': password,
+          'firstName': fname,
+          "lastName":lname,
+          'password': password
         }),
       );
-
+      print(fname);
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = jsonDecode(response.body);
         isAuthenticated.value = true;
@@ -83,7 +88,15 @@ class AuthController extends GetxController {
         userEmail.value = data['email'];
         _persist();
         return true;
-      } else {
+      }if (response.statusCode == 403) {
+        print("403");
+        return false;
+      }
+      if(response.statusCode == 400){
+        print("400");
+        return false;
+      }
+      else {
         return false;
       }
     } catch (e) {

@@ -13,7 +13,9 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final name = TextEditingController();
+  final lname = TextEditingController();
+  final fname = TextEditingController();
+  final uname = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
   final confirm = TextEditingController();
@@ -30,7 +32,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    name.dispose();
+    fname.dispose();
+    lname.dispose();
+    uname.dispose();
     email.dispose();
     password.dispose();
     confirm.dispose();
@@ -39,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final ok = await auth.register(name.text.trim(), email.text.trim(), password.text);
+    final ok = await auth.register(fname.text.trim(),lname.text.trim(),uname.text.trim() ,email.text.trim(), password.text);
     if (ok) {
       Get.offAllNamed(AppRoutes.home);
     } else {
@@ -63,9 +67,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const Text('Join Us', style: AppTheme.heading1, textAlign: TextAlign.center),
                 const SizedBox(height: 24),
                 TextFormField(
-                  controller: name,
-                  decoration: const InputDecoration(labelText: 'Full Name', prefixIcon: Icon(Icons.person_outline)),
-                  validator: (v) => (v == null || v.length < 2) ? 'Enter your name' : null,
+                  controller: uname,
+                  decoration: const InputDecoration(labelText: 'User Name', prefixIcon: Icon(Icons.person_outline)),
+                  validator: (v) => (v == null || v.length < 2) ? 'Enter your user name' : null,
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: fname,
+                  decoration: const InputDecoration(labelText: 'First Name', prefixIcon: Icon(Icons.person_outline)),
+                  validator: (v) => (v == null || v.length < 2) ? 'Enter your First name' : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: lname,
+                  decoration: const InputDecoration(labelText: 'Last Name', prefixIcon: Icon(Icons.person_outline)),
+                  validator: (v) => (v == null || v.length < 2) ? 'Enter your last name' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(

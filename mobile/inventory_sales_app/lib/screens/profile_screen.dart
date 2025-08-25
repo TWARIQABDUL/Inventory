@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:inventory_sales_app/controllers/auth_controller.dart';
 import 'package:inventory_sales_app/routes/app_routes.dart';
 import 'package:inventory_sales_app/utils/theme.dart';
@@ -9,10 +10,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _storage = GetStorage();
+
     final auth = Get.isRegistered<AuthController>()
         ? Get.find<AuthController>()
         : Get.put(AuthController(), permanent: true);
+final strg = _storage.getValues();
 
+print("got$strg");
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
       body: Obx(() => Padding(

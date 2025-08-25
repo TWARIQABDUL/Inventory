@@ -9,11 +9,20 @@ class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
+
   Widget build(BuildContext context) {
     final cart = Get.isRegistered<CartController>()
         ? Get.find<CartController>()
         : Get.put(CartController(), permanent: true);
     final currency = NumberFormat.currency(symbol: 'KES ');
+    // Future <void> initiatePayment (){
+    //   try{
+    //     final amount = cart.totalAmount;
+    //     final
+    //
+    //
+    //   }throw Exception('Something went wrong');
+    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shopping Cart'),
