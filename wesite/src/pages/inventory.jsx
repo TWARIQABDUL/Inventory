@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import {
   Button,
   Flex,
@@ -17,14 +17,18 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useInventory } from "../context/InventoryContext";
+import { AnalyticsContext } from "../context/datacontext";
+import { data } from "autoprefixer";
 
 const { Option } = Select;
 const { Title } = Typography;
 const { Step } = Steps;
 
 export default function Inventory() {
+  const {apiData,setApiData} = useContext(AnalyticsContext)
   const { items, setItems } = useInventory();
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+console.log(apiData);
 
   const initialState = {
     isModalVisible: false,
@@ -157,7 +161,7 @@ export default function Inventory() {
       }
     } catch (error) {
       console.error(error);
-      message.error("Something went wrong!");
+      message.error(data.message+ " holla");
     }
   };
 
@@ -183,8 +187,10 @@ export default function Inventory() {
 
   // Handle Edit Submit
   const handleEditSubmit = async (values) => {
+    console.log(editingProduct);
+    
     try {
-      const res = await fetch(`${baseUrl}/products/${editingProduct.id}`, {
+      const res = await fetch(`${baseUrl}/products/${editingProduct.productId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -198,9 +204,34 @@ export default function Inventory() {
       const data = await res.json();
       if (res.ok) {
         message.success(data.message || "Product updated successfully");
+        try {
+          console.log("I am about to update ",editingProduct);
+          
+            const priceRes = await fetch(`${baseUrl}/price-lists/${editingProduct.priceId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    price: values.price,
+                    product: { productId: editingProduct.productId },
+                }),
+            });
+
+            if (priceRes.ok) {
+                message.success("Price updated successfully!");
+                // setApiData(...)
+                // await fetchProducts()
+
+            } else {
+                const priceData = await priceRes.json();
+                message.error(priceData.message || "Failed to update price");
+            }
+        } catch (priceError) {
+            console.error("Price update failed:", priceError);
+            message.error("Something went wrong while updating the price");
+        }
+        await fetchProducts();
         setIsEditModalVisible(false);
         editForm.resetFields();
-        await fetchProducts();
       } else {
         message.error(data.message || "Failed to update product");
       }
@@ -300,30 +331,30 @@ export default function Inventory() {
   const columns = [
     {
       title: "ID",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "productId",
+      key: "productId",
       render: (text) => <Tag color="blue">{text}</Tag>,
     },
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "productName",
+      key: "productName",
     },
     {
       title: "Category",
-      dataIndex: "category",
-      key: "category",
-      render: (cat) => <Tag color="purple">{cat?.name || "No Category"}</Tag>,
+      dataIndex: "categoryName",
+      key: "categoryName",
+      render: (cat) => <Tag color="purple">{cat}</Tag>,
     },
     {
       title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
+      dataIndex: "inStock",
+      key: "inStock",
     },
     {
       title: "Price",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "productCost",
+      key: "productCost",
       render: (price) => "$" + Number(price).toFixed(2),
     },
     {
@@ -341,19 +372,25 @@ export default function Inventory() {
           <Button
             type="link"
             onClick={() => {
+              console.log(record);
+              
               setEditingProduct(record);
               editForm.setFieldsValue({
-                name: record.name,
+                name: record.productName,
+                qty:record.inStock,
                 description: record.description,
                 categoryId: record.category?.id,
-                taxable: record.taxable,
+                taxable: record.taxed,
+                price:record.productCost,
+                stock:record.inStock
+
               });
               setIsEditModalVisible(true);
             }}
           >
             Edit
           </Button>
-          <Button type="link" danger onClick={() => handleDelete(record.id)}>
+          <Button type="link" danger onClick={() => handleDelete(record.productId)}>
             Delete
           </Button>
         </Space>
@@ -390,7 +427,7 @@ export default function Inventory() {
 
         <Table
           columns={columns}
-          dataSource={items}
+          dataSource={apiData}
           bordered
           pagination={{ pageSize: 8 }}
           rowKey="id"
@@ -471,9 +508,23 @@ export default function Inventory() {
         footer={null}
       >
         <Form form={editForm} layout="vertical" onFinish={handleEditSubmit}>
-          <Form.Item
+  ll        <Form.Item
             name="name"
             label="Product Name"
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="qty"
+            label="Quantity"
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="price"
+            label="price"
             rules={[{ required: true }]}
           >
             <Input />

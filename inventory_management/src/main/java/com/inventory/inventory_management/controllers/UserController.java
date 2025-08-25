@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventory.inventory_management.dto.LoginResponse;
+// import com.inventory.inventory_management.dto.LoginResponse;
 import com.inventory.inventory_management.dto.RegisterResponse;
 import com.inventory.inventory_management.entities.User;
 import com.inventory.inventory_management.services.LoginService;
@@ -32,7 +32,7 @@ public class UserController {
         return userService.creatUser(user);
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody User user) {
 
         return loginService.login(user.getEmail(), user.getPassword());
     }

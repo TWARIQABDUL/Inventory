@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   final _storage = GetStorage();
@@ -24,29 +27,68 @@ class AuthController extends GetxController {
   }
 
   Future<bool> login(String email, String password) async {
+    const String link = "http://localhost:8080/api/auth/login";
     isLoading.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (email == 'demo@example.com' && password == 'password') {
-      isAuthenticated.value = true;
-      userName.value = 'Demo User';
-      userEmail.value = email;
-      _persist();
+    try {
+      final response = await http.post(
+        Uri.parse(link),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        isAuthenticated.value = true;
+        userName.value = data['name']; 
+        userEmail.value = data['email'];
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    } finally {
       isLoading.value = false;
-      return true;
     }
-    isLoading.value = false;
-    return false;
   }
 
   Future<bool> register(String name, String email, String password) async {
+    const String link = "http://localhost:8080/api/auth/register";
     isLoading.value = true;
-    await Future.delayed(const Duration(milliseconds: 800));
-    isAuthenticated.value = true;
-    userName.value = name;
-    userEmail.value = email;
-    _persist();
-    isLoading.value = false;
-    return true;
+    try {
+      final response = await http.post(
+        Uri.parse(link),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'name': name,
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        // Assuming registration also logs the user in
+        final data = jsonDecode(response.body);
+        isAuthenticated.value = true;
+        userName.value = data['name'];
+        userEmail.value = data['email'];
+        _persist();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void logout() {

@@ -2,6 +2,7 @@ package com.inventory.inventory_management.services;
 
 import com.inventory.inventory_management.entities.Stock;
 import com.inventory.inventory_management.dto.CreateStockDto;
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.repository.StockRepository;
 import com.inventory.inventory_management.repository.ProductRepository;
@@ -32,11 +33,16 @@ public class StockService {
 
                 );
             } else {
-                return ResponseEntity.badRequest().body("Something went wrong"
+                return ResponseEntity.badRequest().body(
+                    new DefaultResponse("Something Went Wrong",false)
+                    
                 );
             }
         }
-        return ResponseEntity.badRequest().body("Product ID must be provided.");
+        return ResponseEntity.badRequest().body(
+                    new DefaultResponse("Product ID must be provided",false)
+        );
+
     }
 
     public List<Stock> getAllStock() {
