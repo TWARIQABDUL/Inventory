@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.*;
 
 import com.inventory.inventory_management.dto.CategoryDTO;
 import com.inventory.inventory_management.dto.CreateCategoryResponse;
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.ProductCategory;
 import com.inventory.inventory_management.services.CategoryService;
 
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
-  private CategoryService categoryService;
+  private final CategoryService categoryService;
 
   public CategoryController(CategoryService categoryService){
     this.categoryService = categoryService;
@@ -22,9 +23,30 @@ public class CategoryController {
   ResponseEntity<CreateCategoryResponse> addProduct(@RequestBody ProductCategory cat){
     return categoryService.createCategory(cat);
   }
+
   @GetMapping
   List<CategoryDTO> getAllCategory(){
     return categoryService.getAllCategory();
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getCategoryById(@PathVariable Long id) {
+      return categoryService.getCategoryById(id)
+      .<ResponseEntity<?>>map(ResponseEntity::ok)
+              // .map(ResponseEntity::ok)
+              .orElse(ResponseEntity.status(404).body(
+                new DefaultResponse("Category not Found",false)
+              ));
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<CreateCategoryResponse> updateCategory(@PathVariable Long id, @RequestBody ProductCategory category) {
+      return categoryService.updateCategory(id, category);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+      return categoryService.deleteCategory(id);
+      
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:inventory_sales_app/services/api_service.dart';
@@ -26,6 +28,7 @@ class AuthController extends GetxController {
   }
 
   Future<bool> login(String email, String password) async {
+    const String link = "http://localhost:8080/api/auth/login";
     isLoading.value = true;
     errorMessage.value = '';
     

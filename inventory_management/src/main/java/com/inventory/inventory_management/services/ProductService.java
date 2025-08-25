@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventory.inventory_management.dto.AllProduct;
 import com.inventory.inventory_management.dto.ProductAddeResponse;
+import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.Product;
 import com.inventory.inventory_management.repository.ProductRepository;
 
@@ -30,7 +31,7 @@ public class ProductService {
       );
     } catch (Exception e) {
       return ResponseEntity.ok(
-        new ProductAddeResponse("Something went wrong ",false,product.getProductId())
+        new ProductAddeResponse("Something went wrong "+e,false,product.getProductId())
       );
     }
   }
@@ -41,26 +42,40 @@ public class ProductService {
     .collect(Collectors.toList());
   }
 
-  public Optional<Product> getProductById(Long productId) {
-    return productRepository.findById(productId);
+  public Optional<AllProduct> getProductById(Long productId) {
+    return productRepository.findById(productId)
+    .map(this::convertToAllProduct);
   }
 
-  public Product updateProduct(Long productId, Product productDetails) {
+  public AllProduct updateProduct(Long productId, Product productDetails) {
     Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
     product.setName(productDetails.getName());
     product.setDescription(productDetails.getDescription());
     product.setTaxable(productDetails.getTaxable());
     product.setCategory(productDetails.getCategory());
-    return productRepository.save(product);
+    Product updatedProduct = productRepository.save(product);
+    return convertToAllProduct(updatedProduct);
   }
 
-  public void deleteProduct(Long productId) {
+  public ResponseEntity<?> deleteProduct(Long productId) {
+    try {
     productRepository.deleteById(productId);
+    return ResponseEntity.ok(
+      new DefaultResponse("Product Deleted",true)
+    );
+      
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(
+      new DefaultResponse("Product not Deleted",false)
+    );
+    }
   }
 
  private AllProduct convertToAllProduct(Product product) {
     int quantity = (product.getStock() != null) ? product.getStock().getQuantity() : 0;
     BigDecimal price = (product.getPriceList() != null) ? product.getPriceList().getPrice() : BigDecimal.ZERO;
+    Long priceId = (product.getPriceList() != null) ? product.getPriceList().getPriceListId() :0;
+
     String categoryName = (product.getCategory() != null) ? product.getCategory().getName() : "Uncategorized";
 
     return new AllProduct(
@@ -70,7 +85,9 @@ public class ProductService {
         categoryName,
         product.getTaxable(),
         price,
-        quantity
+        quantity,
+        priceId
+
     );
 }
 

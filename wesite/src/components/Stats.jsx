@@ -30,13 +30,13 @@ export function Stats({items = []}) {
   useEffect(() => {
     const totalItems = items.length;
     const totalValue = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+      (sum, item) => sum + item.productCost * item.inStock,
       0
     );
     const lowStock = items.filter(
-      (item) => item.quantity > 0 && item.quantity <= 5
+      (item) => item.inStock > 0 && item.inStock <= 5
     ).length;
-    const outOfStock = items.filter((item) => item.quantity === 0).length;
+    const outOfStock = items.filter((item) => item.inStock === 0).length;
 
     setStats({totalItems, totalValue, lowStock, outOfStock});
   }, [items]);
