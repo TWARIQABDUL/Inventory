@@ -37,31 +37,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: const Icon(Icons.inventory_2, color: AppTheme.primaryColor, size: 72),
             ),
             const SizedBox(height: 16),
-            Text(product.name, style: AppTheme.heading2),
+            Text(product.productName, style: AppTheme.heading2),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: [
-                Chip(label: Text(product.category.name)),
-                if (product.taxable) const Chip(label: Text('VAT'), backgroundColor: Color(0xFFFFF3CD)),
+                Chip(label: Text(product.categoryName)),
+                if (product.taxed) const Chip(label: Text('VAT'), backgroundColor: Color(0xFFFFF3CD)),
               ],
             ),
             const SizedBox(height: 12),
-            Text(currency.format(product.priceList.price), style: const TextStyle(color: AppTheme.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
+            Text(currency.format(product.productCost), style: const TextStyle(color: AppTheme.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             const Text('Description', style: AppTheme.heading3),
             const SizedBox(height: 6),
             Text(product.description, style: AppTheme.body1),
             const SizedBox(height: 16),
-            if (product.stock.quantity > 0) ...[
+            if (product.inStock > 0) ...[
               const Text('Quantity', style: AppTheme.heading3),
               const SizedBox(height: 8),
               Row(children: [
                 IconButton(onPressed: qty > 1 ? () => setState(() => qty--) : null, icon: const Icon(Icons.remove)),
                 Text('$qty', style: const TextStyle(fontWeight: FontWeight.w600)),
-                IconButton(onPressed: qty < product.stock.quantity ? () => setState(() => qty++) : null, icon: const Icon(Icons.add)),
+                IconButton(onPressed: qty < product.inStock ? () => setState(() => qty++) : null, icon: const Icon(Icons.add)),
                 const Spacer(),
-                Text('In stock: ${product.stock.quantity}', style: AppTheme.body2),
+                Text('In stock: ${product.inStock}', style: AppTheme.body2),
               ]),
               const SizedBox(height: 12),
               Obx(() {

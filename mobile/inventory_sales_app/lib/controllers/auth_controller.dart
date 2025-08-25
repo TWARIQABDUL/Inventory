@@ -28,7 +28,8 @@ class AuthController extends GetxController {
   }
 
   Future<bool> login(String email, String password) async {
-    const String link = "http://localhost:8080/api/auth/login";
+    print("Loging In");
+    const String link = "http://192.168.254.115:1010/api/auth/login";
     isLoading.value = true;
     errorMessage.value = '';
     
@@ -37,10 +38,8 @@ class AuthController extends GetxController {
       
       if (response['status'] == true) {
         isAuthenticated.value = true;
-        userName.value = response['name'] ?? '';
-        userEmail.value = response['email'] ?? '';
-        _persist();
-        isLoading.value = false;
+        userName.value = data['name'];
+        userEmail.value = data['email'];
         return true;
       } else {
         errorMessage.value = response['message'] ?? 'Login failed';
@@ -48,20 +47,35 @@ class AuthController extends GetxController {
         return false;
       }
     } catch (e) {
-      errorMessage.value = e.toString();
+      print("Error Happen $e");
+      return false;
+    } finally {
       isLoading.value = false;
       return false;
     }
   }
 
-  Future<bool> register(String firstName, String lastName, String email, String password) async {
+  Future<bool> register(String name, String email, String password) async {
+    const String link = "http://localhost:8080/api/auth/register";
+    print("Loging in");
     isLoading.value = true;
     errorMessage.value = '';
     
     try {
-      final response = await ApiService.register(firstName, lastName, email, password);
-      
-      if (response['status'] == true || response['message']?.contains('success') == true) {
+      final response = await http.post(
+        Uri.parse(link),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'name': name,
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final data = jsonDecode(response.body);
         isAuthenticated.value = true;
         userName.value = '$firstName $lastName';
         userEmail.value = email;
