@@ -43,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final ok = await auth.register(fname.text.trim(),lname.text.trim(),uname.text.trim() ,email.text.trim(), password.text);
+    final ok = await auth.register(fname.text.trim(),lname.text.trim(),uname.text.trim() ,email.text.trim(), password.text.trim());
     if (ok) {
       Get.offAllNamed(AppRoutes.home);
     } else {
