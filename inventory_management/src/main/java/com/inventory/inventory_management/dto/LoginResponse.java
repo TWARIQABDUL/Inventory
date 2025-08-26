@@ -9,6 +9,7 @@ public class LoginResponse {
     // private String message;
     private String message,name,email;
     private boolean status;
+    private Long user_id;
     
     // private String password;
 
@@ -17,5 +18,7 @@ public class LoginResponse {
         this.name = user.getFirstName()+" " + user.getLastName();
         this.email = user.getEmail();
         this.status = status;
+        this.user_id = user.getUserId();
+
     }
 }

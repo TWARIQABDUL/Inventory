@@ -14,4 +14,5 @@ public class AllProduct {
     private final BigDecimal productCost;
     private final double inStock;
     private final Long priceId;
+    private final String productImage;
 }
