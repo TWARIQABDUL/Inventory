@@ -13,8 +13,7 @@ import LoginPage from './pages/login';
 import Register from './pages/register.jsx';
 import { UserContextProvider } from './context/userContext.jsx';
 import { InventoryProvider } from './context/InventoryContext.jsx';
-import {AnalyticsProvider} from "./context/datacontext.jsx";   // ✅ import
-import UploadDemo from './components/uploadFile.jsx';
+import {AnalyticsProvider} from "./context/datacontext.jsx";
 
 function App() {
   return (
@@ -29,8 +28,6 @@ function App() {
               <Route path="/sales" element={<Sales />} />
               <Route path="/purchase" element={<Purchase />} />
               <Route path="/analytics" element={<Analytics />} />
-              <Route path="/upload" element={<UploadDemo />} />
-
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<Register />} />

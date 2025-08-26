@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
+import 'package:inventory_sales_app/services/api_service.dart';
 
 class AuthController extends GetxController {
   final _storage = GetStorage();
@@ -11,6 +11,7 @@ class AuthController extends GetxController {
   final userName = ''.obs;
   final userEmail = ''.obs;
   final isLoading = false.obs;
+  final errorMessage = ''.obs;
 
   @override
   void onInit() {
@@ -27,82 +28,55 @@ class AuthController extends GetxController {
   }
 
   Future<bool> login(String email, String password) async {
-    print("Loging In");
-    const String link = "http://192.168.254.115:1010/api/auth/login";
+    const String link = "http://localhost:8080/api/auth/login";
     isLoading.value = true;
+    errorMessage.value = '';
+    
     try {
-      final response = await http.post(
-        Uri.parse(link),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'email': email,
-          'password': password,
-        }),
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print("data $data");
+      final response = await ApiService.login(email, password);
+      
+      if (response['status'] == true) {
         isAuthenticated.value = true;
-        userName.value = data['name'];
-        userEmail.value = data['email'];
-        // print(data);
+        userName.value = response['name'] ?? '';
+        userEmail.value = response['email'] ?? '';
         _persist();
-
+        isLoading.value = false;
         return true;
       } else {
+        errorMessage.value = response['message'] ?? 'Login failed';
+        isLoading.value = false;
         return false;
       }
     } catch (e) {
-      print("Error Happen $e");
-      return false;
-    } finally {
+      errorMessage.value = e.toString();
       isLoading.value = false;
+      return false;
     }
   }
 
-  Future<bool> register(String fname,String lname,String username ,String email, String password) async {
-    const String link = "http://192.168.254.115:1010/api/auth/register";
-    print("Loging in");
+  Future<bool> register(String firstName, String lastName, String email, String password) async {
     isLoading.value = true;
+    errorMessage.value = '';
+    
     try {
-      final response = await http.post(
-        Uri.parse(link),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          "username":username,
-          'email': email,
-          'firstName': fname,
-          "lastName":lname,
-          'password': password
-        }),
-      );
-      print(fname);
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+      final response = await ApiService.register(firstName, lastName, email, password);
+      
+      if (response['status'] == true || response['message']?.contains('success') == true) {
         isAuthenticated.value = true;
-        userName.value = data['name'];
-        userEmail.value = data['email'];
+        userName.value = '$firstName $lastName';
+        userEmail.value = email;
         _persist();
+        isLoading.value = false;
         return true;
-      }if (response.statusCode == 403) {
-        print("403");
-        return false;
-      }
-      if(response.statusCode == 400){
-        print("400");
-        return false;
-      }
-      else {
+      } else {
+        errorMessage.value = response['message'] ?? 'Registration failed';
+        isLoading.value = false;
         return false;
       }
     } catch (e) {
-      return false;
-    } finally {
+      errorMessage.value = e.toString();
       isLoading.value = false;
+      return false;
     }
   }
 
@@ -110,6 +84,11 @@ class AuthController extends GetxController {
     isAuthenticated.value = false;
     userName.value = '';
     userEmail.value = '';
+    errorMessage.value = '';
     _storage.erase();
+  }
+
+  void clearError() {
+    errorMessage.value = '';
   }
 }

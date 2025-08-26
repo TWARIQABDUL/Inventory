@@ -29,8 +29,11 @@ class CartItemCard extends StatelessWidget {
                 color: AppTheme.backgroundColor,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child:
-                  const Icon(Icons.inventory_2, color: AppTheme.primaryColor),
+              child: const Icon(
+                Icons.inventory_2,
+                color: AppTheme.primaryColor,
+                size: 30,
+              ),
             ),
             const SizedBox(width: 12),
             
@@ -39,44 +42,93 @@ class CartItemCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(cartItem.product.productName,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(
+                    item.product.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 4),
-                  Text(cartItem.product.categoryName, style: AppTheme.body2),
-                  const SizedBox(height: 8),
-                  Text(currency.format(cartItem.product.productCost),
-                      style: const TextStyle(
-                          color: AppTheme.primaryColor,
-                          fontWeight: FontWeight.w700)),
+                  Text(
+                    item.product.category.name,
+                    style: AppTheme.caption,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    currency.format(item.product.priceList.price),
+                    style: const TextStyle(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  ),
                 ],
               ),
             ),
-            Row(
+            
+            // Quantity Controls
+            Column(
               children: [
-                IconButton(
-                  onPressed: cartItem.quantity > 1
-                      ? () => cart.updateQuantity(
-                          cartItem.product.productId, cartItem.inStoc - 1)
-                      : null,
-                  icon: const Icon(Icons.remove),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: item.quantity > 1
+                          ? () => cart.updateQuantity(item.product.productId, item.quantity - 1)
+                          : null,
+                      icon: const Icon(Icons.remove),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.backgroundColor,
+                        minimumSize: const Size(32, 32),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        '${item.quantity}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: item.quantity < item.product.stock.quantity
+                          ? () => cart.updateQuantity(item.product.productId, item.quantity + 1)
+                          : null,
+                      icon: const Icon(Icons.add),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.backgroundColor,
+                        minimumSize: const Size(32, 32),
+                      ),
+                    ),
+                  ],
                 ),
-                Text('${cartItem.quantity}',
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                IconButton(
-                  onPressed: cartItem.quantity < cartItem.product.inStock
-                      ? () => cart.updateQuantity(
-                          cartItem.product.productId, cartItem.quantity + 1)
-                      : null,
-                  icon: const Icon(Icons.add),
+                const SizedBox(height: 4),
+                Text(
+                  'Total: ${currency.format(item.totalPrice)}',
+                  style: AppTheme.body2.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
             
             // Remove Button
             IconButton(
-              onPressed: () => cart.removeItem(cartItem.product.productId),
-              icon:
-                  const Icon(Icons.delete_outline, color: AppTheme.errorColor),
+              onPressed: () {
+                cart.removeItem(item.product.productId);
+                Get.snackbar(
+                  'Removed',
+                  '${item.product.name} removed from cart',
+                  backgroundColor: AppTheme.errorColor,
+                  colorText: Colors.white,
+                );
+              },
+              icon: const Icon(Icons.delete_outline, color: AppTheme.errorColor),
             ),
           ],
         ),

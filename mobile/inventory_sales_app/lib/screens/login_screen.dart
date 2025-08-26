@@ -30,17 +30,23 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    final ok = await auth.login(email.text.trim(), password.text);
-    print("Recieved ${email.text} and ${password.text} response $ok");
-    if (ok) {
-      Get.offAllNamed(AppRoutes.home);
-    } else {
-      Get.snackbar('Error', 'Invalid email or password',
-          snackPosition: SnackPosition.BOTTOM,
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      final success = await _authController.login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      if (success) {
+        Get.offAllNamed(AppRoutes.home);
+      } else {
+        Get.snackbar(
+          'Login Failed',
+          _authController.errorMessage.value,
           backgroundColor: AppTheme.errorColor,
-          colorText: Colors.white);
+          colorText: Colors.white,
+        );
+      }
     }
   }
 
@@ -55,19 +61,27 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
-                Center(
-                    child: Icon(Icons.shopping_cart,
-                        size: 72, color: AppTheme.primaryColor)),
-                const SizedBox(height: 16),
-                const Text('Welcome Back',
-                    style: AppTheme.heading1, textAlign: TextAlign.center),
-                const SizedBox(height: 32),
+                const SizedBox(height: 60),
+                Text(
+                  'Welcome Back',
+                  style: AppTheme.heading1.copyWith(fontSize: 28),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Sign in to continue to your inventory management',
+                  style: AppTheme.body2,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                
+                // Email
                 TextFormField(
-                  controller: email,
+                  controller: _emailController,
                   decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined)),
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -86,34 +100,48 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon:
-                          Icon(hide ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () => setState(() => hide = !hide),
-                    ),
+                    prefixIcon: Icon(Icons.lock_outline),
                   ),
-                  obscureText: hide,
-                  validator: (v) =>
-                      (v == null || v.length < 6) ? 'Min 6 chars' : null,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 32),
+                
+                // Login Button
                 Obx(() => ElevatedButton(
-                      onPressed: auth.isLoading.value ? null : _submit,
-                      child: auth.isLoading.value
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white)))
-                          : const Text('Sign In'),
-                    )),
-                TextButton(
-                  onPressed: () => Get.toNamed(AppRoutes.register),
-                  child: const Text('Create an account'),
-                )
+                  onPressed: _authController.isLoading.value ? null : _login,
+                  child: _authController.isLoading.value
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Sign In'),
+                )),
+                const SizedBox(height: 24),
+                
+                // Register Link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Don\'t have an account? ',
+                      style: AppTheme.body2,
+                    ),
+                    TextButton(
+                      onPressed: () => Get.toNamed(AppRoutes.register),
+                      child: const Text('Sign Up'),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
