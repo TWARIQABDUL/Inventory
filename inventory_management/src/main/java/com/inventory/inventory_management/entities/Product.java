@@ -44,4 +44,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("product-orderItems")
     private List<OrderItem> orderItems;
+
+    @Column(nullable = false)
+    private String productImage;
 }
