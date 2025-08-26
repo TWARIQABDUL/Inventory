@@ -86,7 +86,9 @@ public class ProductService {
         product.getTaxable(),
         price,
         quantity,
-        priceId
+        priceId,
+        product.getProductImage()
+
 
     );
 }
