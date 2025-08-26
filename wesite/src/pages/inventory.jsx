@@ -108,7 +108,9 @@ export default function Inventory() {
             name: values.name,
             description: values.description,
             taxable: values.taxable,
+            productImage: localStorage.getItem("image"),
             category: { categoryId: values.categoryId },
+            // imageUrl: values.imageUrl, // include uploaded image URL
           }),
         });
         const data = await res.json();
@@ -165,6 +167,7 @@ export default function Inventory() {
           description: values.description,
           category: { categoryId: values.categoryId },
           taxable: values.taxable,
+          imageUrl: values.imageUrl, // include uploaded image URL on update
         }),
       });
       const data = await res.json();
@@ -238,9 +241,12 @@ export default function Inventory() {
           <Flex justify={"space-between"} align={"center"}>
             <Form.Item name="taxable" label="Taxable" valuePropName="checked"><Switch /></Form.Item>
             <Form.Item>
-              <FileUpload />
+              <FileUpload onImageUrlChange={(url) => form.setFieldValue("imageUrl", url)} />
             </Form.Item>
           </Flex>
+          <Form.Item name="imageUrl" style={{ display: "none" }}>
+            <Input />
+          </Form.Item>
           <Form.Item name="categoryId" label="Category" rules={[{ required: true }]}>
             <Select placeholder="Select Category" loading={state.categories.length === 0}>
               {state.categories.map((cat) => (<Option key={cat.categoryId} value={cat.categoryId}>{cat.name}</Option>))}
@@ -321,7 +327,15 @@ export default function Inventory() {
           <Form.Item name="qty" label="Quantity" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="price" label="Price" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="description" label="Description" rules={[{ required: true }]}><Input.TextArea rows={3} /></Form.Item>
-          <Form.Item name="taxable" label="Taxable" valuePropName="checked"><Switch /></Form.Item>
+          <Flex justify={"space-between"} align={"center"}>
+            <Form.Item name="taxable" label="Taxable" valuePropName="checked"><Switch /></Form.Item>
+            <Form.Item>
+              <FileUpload onImageUrlChange={(url) => editForm.setFieldValue("imageUrl", url)} />
+            </Form.Item>
+          </Flex>
+          <Form.Item name="imageUrl" style={{ display: "none" }}>
+            <Input />
+          </Form.Item>
           <Form.Item name="categoryId" label="Category" rules={[{ required: true }]}>
             <Select placeholder="Select Category">
               {state.categories.map((cat) => (<Option key={cat.categoryId} value={cat.categoryId}>{cat.name}</Option>))}
