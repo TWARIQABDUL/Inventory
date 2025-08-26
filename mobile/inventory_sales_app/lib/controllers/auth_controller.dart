@@ -62,7 +62,8 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<bool> register(String fname,String lname,String username ,String email, String password) async {
+  Future<bool> register(String fname, String lname, String username,
+      String email, String password) async {
     const String link = "http://192.168.254.115:1010/api/auth/register";
     print("Loging in");
     isLoading.value = true;
@@ -73,10 +74,10 @@ class AuthController extends GetxController {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          "username":username,
+          "username": username,
           'email': email,
           'firstName': fname,
-          "lastName":lname,
+          "lastName": lname,
           'password': password
         }),
       );
@@ -88,15 +89,15 @@ class AuthController extends GetxController {
         userEmail.value = data['email'];
         _persist();
         return true;
-      }if (response.statusCode == 403) {
+      }
+      if (response.statusCode == 403) {
         print("403");
         return false;
       }
-      if(response.statusCode == 400){
+      if (response.statusCode == 400) {
         print("400");
         return false;
-      }
-      else {
+      } else {
         return false;
       }
     } catch (e) {
