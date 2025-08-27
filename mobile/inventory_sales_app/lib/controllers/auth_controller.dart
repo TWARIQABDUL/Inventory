@@ -10,6 +10,8 @@ class AuthController extends GetxController {
   final isAuthenticated = false.obs;
   final userName = ''.obs;
   final userEmail = ''.obs;
+  final RxInt userId = 0.obs;
+
   final isLoading = false.obs;
 
   @override
@@ -18,12 +20,14 @@ class AuthController extends GetxController {
     isAuthenticated.value = _storage.read('isAuthenticated') ?? false;
     userName.value = _storage.read('userName') ?? '';
     userEmail.value = _storage.read('userEmail') ?? '';
+    print("usr Id I found ${_storage.read("user_id")}");
   }
 
   void _persist() {
     _storage.write('isAuthenticated', isAuthenticated.value);
     _storage.write('userName', userName.value);
     _storage.write('userEmail', userEmail.value);
+    _storage.write('user_id', userId.value);
   }
 
   Future<bool> login(String email, String password) async {
@@ -35,6 +39,7 @@ class AuthController extends GetxController {
         Uri.parse(link),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authirization':'bear hfhsdfhsdfhsdfj46t37489058347urjfwiefh3r'
         },
         body: jsonEncode(<String, String>{
           'email': email,
@@ -47,6 +52,7 @@ class AuthController extends GetxController {
         isAuthenticated.value = true;
         userName.value = data['name'];
         userEmail.value = data['email'];
+        userId.value = data["user_id"];
         // print(data);
         _persist();
 
@@ -88,6 +94,7 @@ class AuthController extends GetxController {
         isAuthenticated.value = true;
         userName.value = data['name'];
         userEmail.value = data['email'];
+        // user Id is not here
         _persist();
         return true;
       }
