@@ -14,6 +14,8 @@ import {
   Table,
   Tag,
   Typography,
+  Row,
+  Col
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useInventory } from "../context/InventoryContext";
@@ -317,15 +319,51 @@ export default function Inventory() {
 
       <Modal title="Edit Product" open={state.isEditModalVisible} onCancel={() => dispatch({ type: "SET_EDIT_MODAL", payload: { visible: false } })} footer={null}>
         <Form form={editForm} layout="vertical" onFinish={handleEditSubmit}>
-          <Form.Item name="name" label="Product Name" rules={[{ required: true }]}><Input /></Form.Item>
-          <Form.Item name="qty" label="Quantity" rules={[{ required: true }]}><Input /></Form.Item>
-          <Form.Item name="price" label="Price" rules={[{ required: true }]}><Input /></Form.Item>
-          <Form.Item name="description" label="Description" rules={[{ required: true }]}><Input.TextArea rows={3} /></Form.Item>
-          <Form.Item name="taxable" label="Taxable" valuePropName="checked"><Switch /></Form.Item>
-          <Form.Item name="categoryId" label="Category" rules={[{ required: true }]}>
-            <Select placeholder="Select Category">
-              {state.categories.map((cat) => (<Option key={cat.categoryId} value={cat.categoryId}>{cat.name}</Option>))}
-            </Select>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="name" label="Product Name" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item name="qty" label="Quantity" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="price" label="Price" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item name="categoryId" label="Category" rules={[{ required: true }]}>
+                <Select placeholder="Select Category">
+                  {state.categories.map((cat) => (<Option key={cat.categoryId} value={cat.categoryId}>{cat.name}</Option>))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="taxable" label="Taxable" valuePropName="checked">
+                <Switch />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item>
+                <FileUpload />
+              </Form.Item>
+            </Col>
+          </Row>
+    
+          <Form.Item name="description" label="Description" rules={[{ required: true }]}>
+            <Input.TextArea rows={3} />
           </Form.Item>
           <Button type="primary" htmlType="submit" block>Update Product</Button>
         </Form>

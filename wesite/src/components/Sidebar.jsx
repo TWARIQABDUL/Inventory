@@ -66,13 +66,6 @@ const Sidebar = ({ isOpen, onClose }) => {
                   </Link>
                 </li>
                 <li className={`nav-item `}>
-                  <Link to="/purchase" className="nav-link">
-                  <ShoppingCart/>
-                    {/* <IconComponent size={18} className="nav-icon" /> */}
-                    <span className="nav-text">purchase</span>
-                  </Link>
-                </li>
-                <li className={`nav-item `}>
                   <Link to="/analytics" className="nav-link">
                   <BarChart/>
                     {/* <IconComponent size={18} className="nav-icon" /> */}

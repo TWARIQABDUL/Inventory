@@ -17,16 +17,15 @@ export default function DashboardTiles() {
     totalValue: 0,
     lowStock: 0,
     outOfStock: 0,
+    profit: 0,
   });
 
-  // Fetch products on mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch(`${baseUrl}/products`);
         const data = await res.json();
 
-        // compute stats
         const totalItems = data.length;
         const totalValue = data.reduce(
           (sum, item) => sum + (item.productCost || 0) * (item.inStock || 0),
@@ -49,35 +48,63 @@ export default function DashboardTiles() {
     fetchProducts();
   }, [baseUrl]);
 
+  useEffect(() => {
+    const fetchOrderMoney = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/orders`);
+        const data = await res.json();
+
+        console.log(data);
+
+        const totalAmount = data.reduce(
+          (sum, order) => sum + (order.actualAmount || 0),
+          0
+        );
+        setTileStat(prev => ({ ...prev, profit: totalAmount }));
+      } catch (error) {
+        console.error("Failed to fetch order data:", error);
+        message.error("Could not load order stats");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderMoney();
+  }, [baseUrl]);
+
   const tileData = [
     {
       key: "total-items",
       title: "Total Items",
       icon: <ShoppingOutlined style={{ fontSize: 24, color: "#1890ff" }} />,
-      value: tileStat.totalItems,
+      content: <Statistic value={tileStat.totalItems} />,
       footer: "+0 items added this week",
     },
     {
       key: "total-value",
       title: "Total Value",
       icon: <DollarOutlined style={{ fontSize: 24, color: "#52c41a" }} />,
-      value: tileStat.totalValue.toFixed(2),
-      prefix: "$",
+      content: <Statistic value={tileStat.totalValue} prefix="$" precision={2} />,
       footer: "Inventory worth",
     },
     {
-      key: "low-stock",
-      title: "Low Stock",
+      key: "stock",
+      title: "Stock",
       icon: <WarningOutlined style={{ fontSize: 24, color: "#faad14" }} />,
-      value: tileStat.lowStock,
+      content: (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <Text strong style={{fontSize: 13}}>{tileStat.lowStock} low</Text>
+          <Text type="danger" style={{fontSize: 13}}>{tileStat.outOfStock} out</Text>
+        </div>
+      ),
       footer: "Items need restocking",
     },
     {
-      key: "out-of-stock",
-      title: "Out of Stock",
-      icon: <WarningOutlined style={{ fontSize: 24, color: "#f5222d" }} />,
-      value: tileStat.outOfStock,
-      footer: "Items unavailable",
+      key: "profit",
+      title: "Profit",
+      icon: <DollarOutlined style={{ fontSize: 24, color: "#52c41a" }} />,
+      content: <Statistic value={tileStat.profit} prefix="$" precision={2} />,
+      footer: "Total Amount Made",
     },
   ];
 
@@ -86,8 +113,8 @@ export default function DashboardTiles() {
       {tileData.map((tile) => (
         <Col key={tile.key} xs={24} sm={12} lg={6}>
           <Card title={tile.title} extra={tile.icon} loading={loading}>
-            <Statistic value={tile.value} prefix={tile.prefix} />
-            <Text type="primary" style={{ marginTop: 8, display: "block" }}>
+            {tile.content}
+            <Text type="secondary" style={{ marginTop: 8, display: "block" }}>
               {tile.footer}
             </Text>
           </Card>

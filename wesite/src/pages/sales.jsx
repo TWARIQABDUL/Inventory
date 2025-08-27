@@ -13,7 +13,7 @@ function Sales() {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:8080/api/orders");
+        const response = await axios.get("http://192.168.254.115:1010/api/orders");
         setOrders(response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -85,7 +85,7 @@ function Sales() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <a onClick={() => showModal(record)}>View</a>
+        <a onClick={() => showModal(record)} style={{color: 'blue'}}>View</a>
       ),
     },
   ];
