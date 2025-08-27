@@ -3,6 +3,7 @@ import 'package:inventory_sales_app/models/product.dart';
 class CartItem {
   final Product product;
   int quantity;
+  final discount = 0;
 
   CartItem({
     required this.product,
@@ -10,7 +11,7 @@ class CartItem {
   });
 
   double get totalPrice => product.productCost * quantity;
-
+  double get actualAmount => (product.productCost * quantity) - discount;
   Map<String, dynamic> toJson() => {
         'product': product.toJson(),
         'quantity': quantity,

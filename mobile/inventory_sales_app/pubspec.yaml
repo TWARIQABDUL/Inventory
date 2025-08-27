@@ -19,8 +19,9 @@ dependencies:
   shimmer: ^3.0.0
   flutter_svg: ^2.0.9
   intl: ^0.18.1
-  flutter_mpesa_stk: ^1.1.0
-
+  # flutter_mpesa_stk: ^1.1.0
+  # flutter_mpesa_stk: ^latest
+  dio: ^5.9.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
