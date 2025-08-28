@@ -1,5 +1,6 @@
 package com.inventory.inventory_management.controllers;
 
+import com.inventory.inventory_management.dto.TransactionDTO;
 import com.inventory.inventory_management.entities.Transaction;
 import com.inventory.inventory_management.services.TransactionService;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> getAllTransactions() {
+    public List<TransactionDTO> getAllTransactions() {
         return transactionService.getAllTransactions();
     }
 
