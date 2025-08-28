@@ -14,6 +14,7 @@ import Register from './pages/register.jsx';
 import { UserContextProvider } from './context/userContext.jsx';
 import { InventoryProvider } from './context/InventoryContext.jsx';
 import {AnalyticsProvider} from "./context/datacontext.jsx";
+import {Transactions} from "./pages/Transactions.jsx";
 
 function App() {
   return (
@@ -26,8 +27,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/sales" element={<Sales />} />
-              <Route path="/purchase" element={<Purchase />} />
-              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/Transactions" element={<Transactions />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<Register />} />

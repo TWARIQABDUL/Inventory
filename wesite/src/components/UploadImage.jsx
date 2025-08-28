@@ -30,6 +30,7 @@ const FileUpload = () => {
         .getPublicUrl(filePath);
 
       message.success('File uploaded successfully!');
+      localStorage.setItem('image', data.publicUrl);
       return data.publicUrl;
     } catch (err) {
       message.error(err.message || 'An error occurred during upload');

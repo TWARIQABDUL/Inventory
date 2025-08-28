@@ -50,6 +50,7 @@ export default function DashboardTiles() {
 
   useEffect(() => {
     const fetchOrderMoney = async () => {
+      setLoading(true);
       try {
         const res = await fetch(`${baseUrl}/orders`);
         const data = await res.json();
