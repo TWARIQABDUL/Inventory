@@ -9,8 +9,8 @@ class PaymentScreen extends GetView<PaymentController> {
 
   @override
   Widget build(BuildContext context) {
-    final double amount = Get.arguments as double? ?? 0.0;
-
+    final respArgs = Get.arguments;
+    // print(respArgs['totalAmount']);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment'),
@@ -22,6 +22,21 @@ class PaymentScreen extends GetView<PaymentController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Obx(() => Visibility(
+                    visible: controller.showResponseBanner.value,
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      color: controller.isSuccesfull.value
+                          ? Colors.greenAccent[700]
+                          : const Color.fromARGB(255, 209, 70, 70),
+                      child: Text(
+                        controller.responseMess.value,
+                        style: const TextStyle(
+                            // backgroundColor:
+                            color: Colors.white),
+                      ),
+                    ),
+                  )),
               const Text(
                 'Enter your M-Pesa phone number to pay:',
                 style: AppTheme.body1,
@@ -29,7 +44,7 @@ class PaymentScreen extends GetView<PaymentController> {
               ),
               const SizedBox(height: 8),
               Text(
-                'KES ${amount.toStringAsFixed(2)}',
+                'KES',
                 style: AppTheme.heading3.copyWith(color: AppTheme.primaryColor),
                 textAlign: TextAlign.center,
               ),
@@ -53,9 +68,11 @@ class PaymentScreen extends GetView<PaymentController> {
               ),
               const SizedBox(height: 32),
               Obx(() => ElevatedButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : controller.processPayment,
+                    onPressed: () => {
+                      controller.isLoading.value? null
+                      :controller.makeMpesaPayment(respArgs)
+
+                      },
                     child: controller.isLoading.value
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text('Pay Now'),

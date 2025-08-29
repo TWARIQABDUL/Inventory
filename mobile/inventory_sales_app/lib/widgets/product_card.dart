@@ -19,6 +19,7 @@ class ProductCard extends StatelessWidget {
     final isInCart = cart.isInCart(product.productId);
 
     return Card(
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -28,59 +29,110 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppTheme.backgroundColor,
-                    borderRadius: BorderRadius.circular(8),
+              /// PRODUCT IMAGE
+              AspectRatio(
+                aspectRatio: 1, // makes it square
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    product.productImage,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.broken_image,
+                          size: 40, color: Colors.grey),
+                    ),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    },
                   ),
-                  child: const Icon(Icons.inventory_2, color: AppTheme.primaryColor, size: 40),
                 ),
               ),
+
               const SizedBox(height: 8),
+
+              /// PRODUCT NAME
               Text(
                 product.productName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
+
               const SizedBox(height: 2),
+
+              /// DESCRIPTION
               Text(
                 product.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: AppTheme.body2,
               ),
+
               const SizedBox(height: 4),
-              Text(product.categoryName, style: AppTheme.caption),
+
+              /// CATEGORY
+              Text(
+                product.categoryName,
+                style: AppTheme.caption,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+
               const Spacer(),
+
+              /// PRICE + ADD TO CART
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    currency.format(product.productCost),
-                    style: const TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.w700),
+                  /// wrap price in Expanded so it can shrink
+                  Expanded(
+                    child: Text(
+                      currency.format(product.productCost),
+                      style: const TextStyle(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+
                   IconButton(
                     onPressed: product.inStock > 0
                         ? () {
                             if (cart.isInCart(product.productId)) {
                               cart.removeItem(product.productId);
-                              Get.snackbar('Removed', 'Removed from cart', snackPosition: SnackPosition.BOTTOM);
+                              Get.snackbar('Removed', 'Removed from cart',
+                                  snackPosition: SnackPosition.BOTTOM);
                             } else {
                               cart.addItem(product);
-                              Get.snackbar('Added', 'Added to cart', snackPosition: SnackPosition.BOTTOM);
+                              Get.snackbar('Added', 'Added to cart',
+                                  snackPosition: SnackPosition.BOTTOM);
                             }
                           }
                         : null,
                     icon: Icon(
-                      isInCart ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
-                      color: isInCart ? AppTheme.errorColor : AppTheme.primaryColor,
+                      isInCart
+                          ? Icons.remove_shopping_cart
+                          : Icons.add_shopping_cart,
+                      color: isInCart
+                          ? AppTheme.errorColor
+                          : AppTheme.primaryColor,
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

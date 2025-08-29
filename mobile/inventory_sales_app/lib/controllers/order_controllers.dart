@@ -41,7 +41,7 @@ class OrderController extends GetxController {
     return order;
   }
 
-  Future<dynamic> saveOrder(List<CartItem> cartItems) async {
+  Future<Map<String, dynamic>?> saveOrder(List<CartItem> cartItems) async {
     loading.value = true;
 
     final orderToSubmit = createOrder(cartItems);
@@ -57,18 +57,18 @@ class OrderController extends GetxController {
         print("Order recieved success full");
         loading.value = false;
 
-        return true;
+        return jsonDecode(response.body);
       } else {
         print("yoo gotch u");
         loading.value = false;
 
-        return false;
+        return null;
       }
     } catch (e) {
       print("Error Happen $e");
       loading.value = false;
 
-      return false;
+      return null;
     } finally {
       // isLoading.value = false;
     }

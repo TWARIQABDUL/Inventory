@@ -19,6 +19,11 @@ dependencies:
   shimmer: ^3.0.0
   flutter_svg: ^2.0.9
   intl: ^0.18.1
+  flutter_local_notifications: ^17.2.2
+  workmanager: ^0.9.0+2
+  permission_handler: ^11.3.1
+
+
   # flutter_mpesa_stk: ^1.1.0
   # flutter_mpesa_stk: ^latest
   dio: ^5.9.0
