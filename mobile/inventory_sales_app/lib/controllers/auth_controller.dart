@@ -58,7 +58,6 @@ class AuthController extends GetxController {
 
         return true;
       } else {
-        print("yoo gotch u");
         return false;
       }
     } catch (e) {

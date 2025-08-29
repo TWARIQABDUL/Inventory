@@ -1,13 +1,14 @@
 import {Card, Form, Input, Button, message, Space} from 'antd';
 import {Loader} from 'lucide-react';
 import React, {useState} from 'react';
-import {data, Link} from 'react-router-dom';
+import {data, Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 function Register() {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const navigate = useNavigate();
 
   const success = (content) => {
     messageApi.open({
@@ -36,7 +37,7 @@ function Register() {
       success(data.mesage)
       console.log("Found some data", data);
       setLoading(false)
-
+      navigate('/login');
     }).catch(e => {
       error(e.response.data.mesage)
       console.log("oops found Error", e);
