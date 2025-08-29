@@ -90,12 +90,12 @@ class CartScreen extends StatelessWidget {
                         onPressed: orderController.loading.value
                             ? null
                             : () async {
-                                bool success =
+                                var orderData =
                                     await orderController.saveOrder(cart.items);
-                                if (success) {
+                                if (orderData != null) {
                                   Get.toNamed(AppRoutes.payment,
-                                      arguments: cart.totalAmount);
-                                  cart.clear();
+                                      arguments: orderData);
+                                  // cart.clear();
                                 } else {
                                   Get.snackbar(
                                       'Error', 'Failed to create order.',
@@ -110,8 +110,7 @@ class CartScreen extends StatelessWidget {
                             : const Text('Checkout with M-Pesa'),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.secondaryColor),
-                      )
-                      )
+                      ))
                 ],
               ),
             )

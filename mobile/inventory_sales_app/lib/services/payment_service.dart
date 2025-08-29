@@ -1,8 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
+// import 'package:flutter_mpesa_stk/flutter_mpesa_stk.dart';
+// import 'package:flutter_mpesa_stk/models/Mpesa.dart';
+// import 'package:flutter_mpesa_stk/models/MpesaResponse.dart';
 
-class PaymentService {
+class PaymentService extends GetxController {
+  RxBool paymentComplete = false.obs;
+  RxBool loading = false.obs;
+  
   Future<Map<String, dynamic>> makeMpesaPayment(
       Map<String, dynamic> data) async {
+        
     String endpoint = "https://menu-server.tppc.tracom.dev/rpc/doMpesaCheckout";
 
     final dio = Dio();
@@ -15,6 +23,7 @@ class PaymentService {
         }),
         data: data,
       );
+
       return response.data;
     } catch (e) {
       if (e is DioException) {

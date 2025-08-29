@@ -28,7 +28,7 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
-            ProductRepository productRepository /* , PaymentMethodRepository paymentMethodRepository */) {
+            ProductRepository productRepository ) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;

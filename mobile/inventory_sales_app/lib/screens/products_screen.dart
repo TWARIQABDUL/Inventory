@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_sales_app/controllers/product_controller.dart';
 import 'package:inventory_sales_app/controllers/cart_controller.dart';
+import 'package:inventory_sales_app/screens/cart_screen.dart';
 import 'package:inventory_sales_app/widgets/product_card.dart';
 import 'package:inventory_sales_app/widgets/category_filter.dart';
 import 'package:inventory_sales_app/utils/theme.dart';
@@ -24,7 +25,10 @@ class ProductsScreen extends StatelessWidget {
         actions: [
           Obx(() => Stack(children: [
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.shopping_cart)),
+                    onPressed: () {
+                      Get.to(CartScreen());
+                    },
+                    icon: const Icon(Icons.shopping_cart)),
                 if (cart.itemCount > 0)
                   Positioned(
                     right: 8,
@@ -82,7 +86,7 @@ class ProductsScreen extends StatelessWidget {
                 itemCount: products.filteredProducts.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.72,
+                  childAspectRatio: 0.58,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),

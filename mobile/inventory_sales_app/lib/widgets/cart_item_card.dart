@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-// import 'package:inventory_sales_app/controllers/order_controllers.dart';
 import 'package:inventory_sales_app/models/cart_item.dart';
 import 'package:inventory_sales_app/controllers/cart_controller.dart';
 import 'package:inventory_sales_app/utils/theme.dart';
@@ -12,11 +11,6 @@ class CartItemCard extends GetView {
 
   @override
   Widget build(BuildContext context) {
-    // final OrderController orderController = OrderController();
-    // orderController.amountToPay.value =
-    //     orderController.amountToPay.value + cartItem.actualAmount.toInt();
-    // print(
-    //     "total amount${cartItem.actualAmount} now we will send ${orderController.amountToPay}");
     final currency = NumberFormat.currency(symbol: 'KES ');
     final cart = Get.find<CartController>();
     return Card(
@@ -33,8 +27,26 @@ class CartItemCard extends GetView {
                 color: AppTheme.backgroundColor,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child:
-                  const Icon(Icons.inventory_2, color: AppTheme.primaryColor),
+              child: Image.network(
+                cartItem.product.productImage,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: Colors.grey.shade200,
+                  child: const Icon(Icons.broken_image,
+                      size: 40, color: Colors.grey),
+                ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                    ),
+                  );
+                },
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -75,9 +87,9 @@ class CartItemCard extends GetView {
             ),
             IconButton(
               onPressed: () => {
-                // orderController.createOrder(cartItem)
-                },
-              //  cart.removeItem(cartItem.product.productId),
+                cart.removeItem(cartItem.product.productId),
+              },
+              
               icon:
                   const Icon(Icons.delete_outline, color: AppTheme.errorColor),
             ),

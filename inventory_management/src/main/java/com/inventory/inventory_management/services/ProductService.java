@@ -53,6 +53,7 @@ public class ProductService {
     product.setDescription(productDetails.getDescription());
     product.setTaxable(productDetails.getTaxable());
     product.setCategory(productDetails.getCategory());
+    product.setProductImage(productDetails.getProductImage());
     Product updatedProduct = productRepository.save(product);
     return convertToAllProduct(updatedProduct);
   }
