@@ -4,14 +4,12 @@ import com.inventory.inventory_management.dto.DefaultResponse;
 import com.inventory.inventory_management.entities.Order;
 import com.inventory.inventory_management.entities.OrderItem;
 import com.inventory.inventory_management.entities.Product;
-import com.inventory.inventory_management.entities.Stock;
 import com.inventory.inventory_management.entities.User;
 // import com.inventory.inventory_management.entities.PaymentMethod;
 // import com.inventory.inventory_management.entities.Transaction;
 import com.inventory.inventory_management.repository.OrderRepository;
 import com.inventory.inventory_management.repository.UserRepository;
 import com.inventory.inventory_management.repository.ProductRepository;
-import com.inventory.inventory_management.repository.StockRepository;
 // import com.inventory.inventory_management.repository.PaymentMethodRepository;
 
 import org.springframework.stereotype.Service;
@@ -28,14 +26,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    private final StockRepository stockRepository;
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
-            ProductRepository productRepository, StockRepository stockRepository /* , PaymentMethodRepository paymentMethodRepository */) {
+            ProductRepository productRepository ) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
-        this.stockRepository = stockRepository;
         // this.paymentMethodRepository = paymentMethodRepository;
     }
 
@@ -61,20 +57,8 @@ public class OrderService {
                 if (existingProduct.isEmpty()) {
                     return ResponseEntity.badRequest().body("Product not found for order item.");
                 }
-                Product product = existingProduct.get();
-                item.setProduct(product);
+                item.setProduct(existingProduct.get());
                 item.setOrder(order);
-
-                // Reduce stock
-                Stock stock = stockRepository.findByProduct(product);
-                if (stock == null) {
-                    return ResponseEntity.badRequest().body("Stock not found for product: " + product.getProductName());
-                }
-                if (stock.getQuantity() < item.getQuantity()) {
-                    return ResponseEntity.badRequest().body("Not enough stock for product: " + product.getProductName());
-                }
-                stock.setQuantity(stock.getQuantity() - item.getQuantity());
-                stockRepository.save(stock);
             }
         } else {
             return ResponseEntity.badRequest().body("Order must contain at least one item.");
