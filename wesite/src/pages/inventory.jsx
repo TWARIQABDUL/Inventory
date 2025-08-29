@@ -223,6 +223,25 @@ export default function Inventory() {
     }
   };
 
+  async function handleDelete(productId) {
+    try {
+      const res = await fetch(`${baseUrl}/products/${productId}`, {
+        method: 'DELETE'
+      });
+
+      if (res.ok) {
+        message.success('Product deleted successfully');
+        await fetchProducts();
+      } else {
+        const data = await res.json();
+        message.error(data.message || 'Failed to delete product');
+      }
+    } catch (err) {
+      console.error(err);
+      message.error('An error occurred while deleting');
+    }
+  }
+
   const columns = [
     {title: "Product ID", dataIndex: "productId", key: "productId", render: (text) => <Tag color="blue">{text}</Tag>},
     {title: "Product Name", dataIndex: "productName", key: "productName"},
