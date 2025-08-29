@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+// import 'package:inventory_sales_app/controllers/order_controllers.dart';
 import 'package:inventory_sales_app/models/cart_item.dart';
 import 'package:inventory_sales_app/controllers/cart_controller.dart';
 import 'package:inventory_sales_app/utils/theme.dart';
 
-class CartItemCard extends StatelessWidget {
+class CartItemCard extends GetView {
   final CartItem cartItem;
   const CartItemCard({super.key, required this.cartItem});
 
   @override
   Widget build(BuildContext context) {
+    // final OrderController orderController = OrderController();
+    // orderController.amountToPay.value =
+    //     orderController.amountToPay.value + cartItem.actualAmount.toInt();
+    // print(
+    //     "total amount${cartItem.actualAmount} now we will send ${orderController.amountToPay}");
     final currency = NumberFormat.currency(symbol: 'KES ');
     final cart = Get.find<CartController>();
     return Card(
@@ -68,7 +74,10 @@ class CartItemCard extends StatelessWidget {
               ],
             ),
             IconButton(
-              onPressed: () => cart.removeItem(cartItem.product.productId),
+              onPressed: () => {
+                // orderController.createOrder(cartItem)
+                },
+              //  cart.removeItem(cartItem.product.productId),
               icon:
                   const Icon(Icons.delete_outline, color: AppTheme.errorColor),
             ),

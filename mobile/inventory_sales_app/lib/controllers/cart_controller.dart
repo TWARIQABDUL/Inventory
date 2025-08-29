@@ -39,4 +39,6 @@ class CartController extends GetxController {
   int getQuantity(int productId) =>
       items.firstWhereOrNull((i) => i.product.productId == productId)?.quantity ?? 0;
   void clear() => items.clear();
+
+  
 }
