@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:inventory_sales_app/models/cart_item.dart';
+import 'package:inventory_sales_app/controllers/cart_controller.dart';
+import 'package:inventory_sales_app/utils/theme.dart';
+
+class CartItemCard extends GetView {
+  final CartItem cartItem;
+  const CartItemCard({super.key, required this.cartItem});
+
+  @override
+  Widget build(BuildContext context) {
+    final currency = NumberFormat.currency(symbol: 'KES ');
+    final cart = Get.find<CartController>();
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppTheme.backgroundColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Image.network(
+                cartItem.product.productImage,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: Colors.grey.shade200,
+                  child: const Icon(Icons.broken_image,
+                      size: 40, color: Colors.grey),
+                ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(cartItem.product.productName,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
+                  Text(cartItem.product.categoryName, style: AppTheme.body2),
+                  const SizedBox(height: 8),
+                  Text(currency.format(cartItem.product.productCost),
+                      style: const TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w700)),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: cartItem.quantity > 1
+                      ? () => cart.updateQuantity(
+                          cartItem.product.productId, cartItem.quantity - 1)
+                      : null,
+                  icon: const Icon(Icons.remove),
+                ),
+                Text('${cartItem.quantity}',
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                IconButton(
+                  onPressed: cartItem.quantity < cartItem.product.inStock
+                      ? () => cart.updateQuantity(
+                          cartItem.product.productId, cartItem.quantity + 1)
+                      : null,
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
+            IconButton(
+              onPressed: () => {
+                cart.removeItem(cartItem.product.productId),
+              },
+              
+              icon:
+                  const Icon(Icons.delete_outline, color: AppTheme.errorColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,123 @@
+import 'dart:convert';
+
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
+
+class AuthController extends GetxController {
+  final _storage = GetStorage();
+
+  final isAuthenticated = false.obs;
+  final userName = ''.obs;
+  final userEmail = ''.obs;
+  final RxInt userId = 0.obs;
+
+  final isLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    isAuthenticated.value = _storage.read('isAuthenticated') ?? false;
+    userName.value = _storage.read('userName') ?? '';
+    userEmail.value = _storage.read('userEmail') ?? '';
+    print("usr Id I found ${_storage.read("user_id")}");
+  }
+
+  void _persist() {
+    _storage.write('isAuthenticated', isAuthenticated.value);
+    _storage.write('userName', userName.value);
+    _storage.write('userEmail', userEmail.value);
+    _storage.write('user_id', userId.value);
+  }
+
+  Future<bool> login(String email, String password) async {
+    print("Loging In");
+    const String link = "http://192.168.254.115:1010/api/auth/login";
+    isLoading.value = true;
+    try {
+      final response = await http.post(
+        Uri.parse(link),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authirization':'bear hfhsdfhsdfhsdfj46t37489058347urjfwiefh3r'
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print("data $data");
+        isAuthenticated.value = true;
+        userName.value = data['name'];
+        userEmail.value = data['email'];
+        userId.value = data["user_id"];
+        // print(data);
+        _persist();
+
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Error Happen $e");
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> register(String fname, String lname, String username,
+      String email, String password) async {
+    const String link = "http://192.168.254.115:1010/api/auth/register";
+    print("Loging in");
+    isLoading.value = true;
+    try {
+      final response = await http.post(
+        Uri.parse(link),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "username": username,
+          'email': email,
+          'firstName': fname,
+          "lastName": lname,
+          'password': password
+        }),
+      );
+      print(fname);
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        isAuthenticated.value = true;
+        userName.value = data['name'];
+        userEmail.value = data['email'];
+        // user Id is not here
+        _persist();
+        return true;
+      }
+      if (response.statusCode == 403) {
+        print("403");
+        return false;
+      }
+      if (response.statusCode == 400) {
+        print("400");
+        return false;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void logout() {
+    isAuthenticated.value = false;
+    userName.value = '';
+    userEmail.value = '';
+    _storage.erase();
+  }
+}

@@ -1,5 +1,6 @@
 # React Vite build & dependencies
 wesite/node_modules/
+inventory_management/src/main/resources/application.properties
 wesite/dist/
 
 # Logs
@@ -27,3 +28,4 @@ Thumbs.db
 
 # Optional cache
 wesite/.cache/
+node_modules

@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:inventory_sales_app/models/product.dart';
+import 'package:inventory_sales_app/controllers/cart_controller.dart';
+import 'package:inventory_sales_app/routes/app_routes.dart';
+import 'package:inventory_sales_app/utils/theme.dart';
+
+class ProductCard extends StatelessWidget {
+  final Product product;
+  const ProductCard({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final currency = NumberFormat.currency(symbol: 'KES ');
+    final cart = Get.isRegistered<CartController>()
+        ? Get.find<CartController>()
+        : Get.put(CartController(), permanent: true);
+    final isInCart = cart.isInCart(product.productId);
+
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => Get.toNamed(AppRoutes.productDetail, arguments: product),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// PRODUCT IMAGE
+              AspectRatio(
+                aspectRatio: 1, // makes it square
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    product.productImage,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.broken_image,
+                          size: 40, color: Colors.grey),
+                    ),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              /// PRODUCT NAME
+              Text(
+                product.productName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              ),
+
+              const SizedBox(height: 2),
+
+              /// DESCRIPTION
+              Text(
+                product.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.body2,
+              ),
+
+              const SizedBox(height: 4),
+
+              /// CATEGORY
+              Text(
+                product.categoryName,
+                style: AppTheme.caption,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+
+              const Spacer(),
+
+              /// PRICE + ADD TO CART
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// wrap price in Expanded so it can shrink
+                  Expanded(
+                    child: Text(
+                      currency.format(product.productCost),
+                      style: const TextStyle(
+                        color: AppTheme.primaryColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+
+                  IconButton(
+                    onPressed: product.inStock > 0
+                        ? () {
+                            if (cart.isInCart(product.productId)) {
+                              cart.removeItem(product.productId);
+                              Get.snackbar('Removed', 'Removed from cart',
+                                  snackPosition: SnackPosition.BOTTOM);
+                            } else {
+                              cart.addItem(product);
+                              Get.snackbar('Added', 'Added to cart',
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
+                          }
+                        : null,
+                    icon: Icon(
+                      isInCart
+                          ? Icons.remove_shopping_cart
+                          : Icons.add_shopping_cart,
+                      color: isInCart
+                          ? AppTheme.errorColor
+                          : AppTheme.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

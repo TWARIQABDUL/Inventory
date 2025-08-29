@@ -1,27 +1,40 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout';
-import Dashboard from './components/Dashboard';
+import { Dashboard } from './pages/Dashboard.jsx';
 import './styles/global.css';
-import Home from './components/home';
+import './styles/analytics.css';
+
 import Inventory from './pages/inventory';
 import Sales from './pages/sales';
 import Purchase from './pages/purchase';
+import Analytics from './pages/analytics';
+import LoginPage from './pages/login';
+import Register from './pages/register.jsx';
+import { UserContextProvider } from './context/userContext.jsx';
+import { InventoryProvider } from './context/InventoryContext.jsx';
+import {AnalyticsProvider} from "./context/datacontext.jsx";
+import {Transactions} from "./pages/Transactions.jsx";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Layout wraps all main pages */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path='/inventory' element ={<Inventory/>}/>
-          <Route path='/sales' element ={<Sales/>}/>
-          <Route path='/purchase' element ={<Purchase/>}/>
-          {/* <Route path='/home' element ={<Home/>}/> */}
-          {/* Add more pages here */}
-        </Route>
-      </Routes>
+      <UserContextProvider>
+        <AnalyticsProvider>
+        <InventoryProvider>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/sales" element={<Sales />} />
+              <Route path="/Transactions" element={<Transactions />} />
+            </Route>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </InventoryProvider>
+        </AnalyticsProvider>
+      </UserContextProvider>
     </BrowserRouter>
   );
 }
